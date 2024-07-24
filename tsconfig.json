@@ -14,5 +14,6 @@
     "baseUrl": "./",
     "skipLibCheck": true,
     "incremental": true
-  }
+  },
+  "include": ["./src/**/*.ts"]
 }
