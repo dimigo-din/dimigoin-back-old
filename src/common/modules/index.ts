@@ -6,8 +6,8 @@ import { DIMIJWTModule } from "./jwt.module";
 import { DIMIScheduleModule } from "./schedule.module";
 
 export const DIMIEssentialModules = [
-	DIMIConfigModule,
-	DIMIDatabaseModule,
-	DIMIJWTModule,
-	DIMIScheduleModule,
+  DIMIConfigModule,
+  DIMIDatabaseModule,
+  DIMIJWTModule,
+  DIMIScheduleModule,
 ];
