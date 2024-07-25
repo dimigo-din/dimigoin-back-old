@@ -7,4 +7,4 @@ node_modules/
 [._]sw[a-p]
 
 .env
-.dev.env
+.env.dev

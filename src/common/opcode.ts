@@ -7,6 +7,16 @@ export type OpcodeNames =
 	| "ValidateFailed"
 	| "NotFound";
 
+export const $ = (
+	opcode: number,
+	statusCode: number,
+	message?: string,
+): OpcodeItem => {
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	return (details: { [key: string]: any } = {}) =>
+		new HttpException({ statusCode: opcode, message, ...details }, statusCode);
+};
+
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export type OpcodeItem = (details?: { [key: string]: any }) => HttpException;
 export const globalOpcode: { [key in OpcodeNames]: OpcodeItem } = {
@@ -32,13 +42,3 @@ export const globalOpcode: { [key in OpcodeNames]: OpcodeItem } = {
 		"잘못된 요청입니다. 해당 Route가 존재하는지 다시 한번 확인해주세요.",
 	),
 };
-
-export function $(
-	opcode: number,
-	statusCode: number,
-	message?: string,
-): OpcodeItem {
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	return (details: { [key: string]: any } = {}) =>
-		new HttpException({ statusCode: opcode, message, ...details }, statusCode);
-}
