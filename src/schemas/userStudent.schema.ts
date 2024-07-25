@@ -1,5 +1,5 @@
-import { Prop, Schema } from "@nestjs/mongoose";
-import { Types } from "mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Types, type HydratedDocument } from "mongoose";
 
 import type { Class, Grade } from "src/common/types";
 import { ClassValues, GradeValues } from "src/common/types";
@@ -41,3 +41,6 @@ export class UserStudent {
 	})
 	number: number;
 }
+
+export const UserStudentSchema = SchemaFactory.createForClass(UserStudent);
+export type UserStudentDocument = HydratedDocument<UserStudent>;

@@ -17,6 +17,12 @@ export class User {
 
 	@Prop({
 		required: true,
+		type: String
+	})
+	email: string;
+
+	@Prop({
+		required: true,
 		type: String,
 		minlength: 2,
 		maxlength: 4,
