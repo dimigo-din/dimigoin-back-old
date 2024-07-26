@@ -3,8 +3,11 @@ import type { LoginType } from "src/common/types";
 
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
 import { OAuth2Client } from "google-auth-library";
+
+import { Token, TokenDocument } from "src/schemas/token.schema";
 
 import {
   Login,
@@ -15,10 +18,14 @@ import {
   type UserStudentDocument,
 } from "src/schemas";
 
+import { TokensResponse } from "./auth.dto";
+import { DIMIJwtPayload, DIMIRefreshPayload } from "./auth.interface";
+
 @Injectable()
 export class AuthService {
   constructor(
     private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
 
     @InjectModel(Login.name)
     private loginModel: Model<LoginDocument>,
@@ -26,6 +33,8 @@ export class AuthService {
     private userModel: Model<UserDocument>,
     @InjectModel(UserStudent.name)
     private userStudentModel: Model<UserStudentDocument>,
+    @InjectModel(Token.name)
+    private tokenModel: Model<TokenDocument>,
   ) {}
 
   googleOAuthClient = new OAuth2Client(
@@ -72,5 +81,56 @@ export class AuthService {
         HttpStatus.UNAUTHORIZED,
       );
     }
+  }
+
+  async verify(token: string): Promise<DIMIJwtPayload | DIMIRefreshPayload> {
+    try {
+      const payload: DIMIJwtPayload | DIMIRefreshPayload =
+        await this.jwtService.verifyAsync(token);
+      return payload;
+    } catch (err) {
+      if (err.name == "TokenExpiredError") {
+        throw new HttpException(
+          "토큰이 만료되었습니다.",
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+      throw new HttpException(
+        "인증되지 않은 토큰입니다.",
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+  }
+
+  async createToken(payload: UserDocument): Promise<TokensResponse | null> {
+    const user = await this.userModel.findById(payload._id);
+    if (!user) return null;
+
+    const accessToken = await this.jwtService.signAsync(
+      {
+        ...user,
+        refresh: false,
+      },
+      {
+        expiresIn: "30m",
+      },
+    );
+
+    const refreshToken = await this.jwtService.signAsync(
+      {
+        user: user._id,
+        refresh: true,
+      },
+      {
+        expiresIn: "1y",
+      },
+    );
+
+    await new this.tokenModel({ refreshToken, user: user._id }).save();
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 }

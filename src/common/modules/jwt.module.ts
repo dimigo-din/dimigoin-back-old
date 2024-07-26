@@ -19,5 +19,8 @@ export const JWTOptions: JwtModuleAsyncOptions = {
   }),
 };
 
-@Module({ imports: [JwtModule.registerAsync(JWTOptions)] })
+@Module({
+  imports: [JwtModule.registerAsync(JWTOptions)],
+  exports: [JwtModule],
+})
 export class DIMIJWTModule {}
