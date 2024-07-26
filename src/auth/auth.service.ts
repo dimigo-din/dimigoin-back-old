@@ -5,6 +5,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
+import * as bcrypt from "bcrypt";
 import { OAuth2Client } from "google-auth-library";
 
 import { Token, TokenDocument } from "src/schemas/token.schema";
@@ -18,7 +19,9 @@ import {
   type UserStudentDocument,
 } from "src/schemas";
 
-import { TokensResponse } from "./auth.dto";
+import { AuthError } from "../common/errors";
+
+import { PasswordLoginDto, TokensResponse } from "./auth.dto";
 import { DIMIJwtPayload, DIMIRefreshPayload } from "./auth.interface";
 
 @Injectable()
@@ -42,36 +45,62 @@ export class AuthService {
     this.configService.get<string>("GOOGLE_CLIENT_SECRET"),
   );
 
+  async passwordLogin(data: PasswordLoginDto) {
+    const type: LoginType = "password";
+
+    try {
+      const user = await this.userModel.findOne({ id: data.user });
+      if (!user) throw new Error(AuthError.UserNotFound);
+
+      const loginInfo = await this.loginModel.findOne({
+        type,
+        user: user._id,
+      });
+      if (!loginInfo) throw new Error(AuthError.LoginInfoUnavailable);
+
+      if (!bcrypt.compareSync(data.password, loginInfo.value))
+        throw new Error(AuthError.PasswordMismatch);
+
+      return this.createToken(user);
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        "비밀번호 인증에 실패하였습니다.",
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+  }
+
   async dimigoLogin(token: string) {
     const type: LoginType = "dimigo";
 
     try {
       const { tokens } = await this.googleOAuthClient.getToken(token);
-      if (!tokens.id_token)
-        throw new Error("구글 토큰에서 id_token을 가져올 수 없습니다.");
+      if (!tokens.id_token) throw new Error(AuthError.CannotGetGoogleIdToken);
 
       const ticket = await this.googleOAuthClient.verifyIdToken({
         idToken: tokens.id_token,
       });
       const payload = ticket.getPayload();
+      if (!payload) throw new Error(AuthError.CannotGetGooglePayload);
 
-      if (!payload)
-        throw new Error("구글 토큰에서 payload를 가져올 수 없습니다.");
-      const loginInfo = await this.loginModel
-        .findOne({ type, value: payload.sub })
-        .populate("User");
-      if (!loginInfo) throw new Error("로그인 정보를 찾을 수 없습니다.");
+      const loginInfo = await this.loginModel.findOne({
+        type,
+        value: payload.sub,
+      });
+      if (!loginInfo) throw new Error(AuthError.LoginInfoUnavailable);
+
       const user = await this.userModel.findOne({ _id: loginInfo.user });
-      if (!user) throw new Error("사용자 정보를 찾을 수 없습니다.");
+      if (!user) throw new Error(AuthError.UserNotFound);
 
       if (user.type === "student") {
         const student = await this.userStudentModel.findOne({ user: user._id });
-        if (!student) throw new Error("학생 정보를 찾을 수 없습니다.");
+        if (!student) throw new Error(AuthError.StudentNotFound);
       } else if (user.type === "teacher") {
         // 선생님
       } else if (user.type === "admin") {
         // 관리자
-      } else throw new Error();
+      } else throw new Error(AuthError.ForbiddenUserType);
 
       // return await this.userManageService.getUserByEmail();
     } catch (error) {
@@ -102,10 +131,7 @@ export class AuthService {
     }
   }
 
-  async createToken(payload: UserDocument): Promise<TokensResponse | null> {
-    const user = await this.userModel.findById(payload._id);
-    if (!user) return null;
-
+  async createToken(user: UserDocument): Promise<TokensResponse | null> {
     const accessToken = await this.jwtService.signAsync(
       {
         ...user,
@@ -113,6 +139,7 @@ export class AuthService {
       },
       {
         expiresIn: "30m",
+        secret: this.configService.get<string>("JWT_PRIVATE"),
       },
     );
 
@@ -123,6 +150,7 @@ export class AuthService {
       },
       {
         expiresIn: "1y",
+        secret: this.configService.get<string>("JWT_PRIVATE"),
       },
     );
 

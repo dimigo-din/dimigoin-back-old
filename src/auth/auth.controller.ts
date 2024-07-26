@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpStatus, Post } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { LoginDto, TokensResponse } from "./auth.dto";
+import { DimigoLoginDto, PasswordLoginDto, TokensResponse } from "./auth.dto";
 import { AuthService } from "./auth.service";
 
 @ApiTags("Auth")
@@ -17,6 +17,20 @@ export class AuthController {
   }
 
   @ApiOperation({
+    summary: "패스워드 로그인",
+    description: "분리된 패스워드 로그인 시스템입니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "로그인 성공",
+    type: TokensResponse,
+  })
+  @Post("/login/password")
+  passwordLogin(@Body() data: PasswordLoginDto) {
+    return this.authService.passwordLogin(data);
+  }
+
+  @ApiOperation({
     summary: "앱 구글 로그인",
     description: "앱의 구글 로그인을 처리합니다.",
   })
@@ -26,8 +40,7 @@ export class AuthController {
     type: TokensResponse,
   })
   @Post("/login/dimigo")
-  dimigoLogin(@Body() data: LoginDto) {
-    console.log(data);
+  dimigoLogin(@Body() data: DimigoLoginDto) {
     return this.authService.dimigoLogin(data.token);
   }
 }

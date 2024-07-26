@@ -9,7 +9,17 @@ export class TokensResponse {
   refreshToken: string;
 }
 
-export class LoginDto {
+export class PasswordLoginDto {
+  @ApiProperty()
+  @IsString()
+  user: string;
+
+  @ApiProperty()
+  @IsString()
+  password: string;
+}
+
+export class DimigoLoginDto {
   @ApiProperty()
   @IsString()
   token: string;

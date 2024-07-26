@@ -1,9 +1,6 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
-import { DIMIJWTModule } from "src/common/modules/jwt.module";
-import { Token, TokenSchema } from "src/schemas/token.schema";
-
 import {
   Login,
   LoginSchema,
@@ -13,8 +10,8 @@ import {
   UserStudentSchema,
 } from "src/schemas";
 
-import { AuthController } from "./auth.controller";
-import { AuthService } from "./auth.service";
+import { UserManageController } from "./userManage.controller";
+import { UserManageService } from "./userManage.service";
 
 @Module({
   imports: [
@@ -22,11 +19,9 @@ import { AuthService } from "./auth.service";
       { name: Login.name, schema: LoginSchema },
       { name: User.name, schema: UserSchema },
       { name: UserStudent.name, schema: UserStudentSchema },
-      { name: Token.name, schema: TokenSchema },
     ]),
-    DIMIJWTModule,
   ],
-  controllers: [AuthController],
-  providers: [AuthService],
+  controllers: [UserManageController],
+  providers: [UserManageService],
 })
-export class AuthModule {}
+export class UserManageModule {}
