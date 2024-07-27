@@ -139,7 +139,6 @@ export class AuthService {
         refresh: false,
       },
       {
-        algorithm: "RS256",
         expiresIn: "30m",
       },
     );
@@ -150,7 +149,6 @@ export class AuthService {
         refresh: true,
       },
       {
-        algorithm: "RS256",
         expiresIn: "1y",
       },
     );
