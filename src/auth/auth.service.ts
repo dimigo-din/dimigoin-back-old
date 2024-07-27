@@ -132,9 +132,10 @@ export class AuthService {
   }
 
   async createToken(user: UserDocument): Promise<TokensResponse | null> {
+    console.log(user);
     const accessToken = await this.jwtService.signAsync(
       {
-        ...user,
+        ...user.toJSON(),
         refresh: false,
       },
       {
