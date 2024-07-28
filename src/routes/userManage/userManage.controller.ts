@@ -1,5 +1,9 @@
-import { Body, Controller, Get, HttpStatus, Post } from "@nestjs/common";
+import { Body, Controller, HttpStatus, Post, UseGuards } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+
+import { DIMIJwtAuthGuard } from "../../auth/auth.guard";
+import { DIMIAdminGuard } from "../../auth/auth.guard.admin";
+import { DIMITeacherGuard } from "../../auth/auth.guard.teacher";
 
 import { CreatePasswordDto, CreateUserDto } from "./userManage.dto";
 import { UserManageService } from "./userManage.service";
@@ -18,6 +22,7 @@ export class UserManageController {
     description: "로그인 연결 성공",
     type: Boolean,
   })
+  @UseGuards(DIMIJwtAuthGuard, DIMIAdminGuard)
   @Post("/register/login/password")
   registerLoginPassword(@Body() data: CreatePasswordDto) {
     console.log(data);
@@ -33,6 +38,7 @@ export class UserManageController {
     description: "유저 생성 성공",
     type: Boolean,
   })
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
   @Post("/register/user")
   registerUser(@Body() data: CreateUserDto) {
     console.log(data);

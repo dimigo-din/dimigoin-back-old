@@ -4,20 +4,20 @@ import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy, VerifiedCallback } from "passport-jwt";
 
 import { AuthError } from "../common/errors";
-import { UserManageService } from "../routes/userManage/userManage.service";
 
 import { DIMIJwtPayload } from "./auth.interface";
+import { AuthService } from "./auth.service";
 
 @Injectable()
 export class DIMIJwtStrategy extends PassportStrategy(Strategy, "jwt") {
   constructor(
-    private readonly userManageService: UserManageService,
+    private readonly authService: AuthService,
     private readonly configService: ConfigService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>("JWT_SECRET_KEY"),
+      secretOrKey: configService.get<string>("JWT_PRIVATE"),
     });
   }
 
@@ -26,7 +26,7 @@ export class DIMIJwtStrategy extends PassportStrategy(Strategy, "jwt") {
     done: VerifiedCallback,
   ): Promise<any> {
     if (!payload.refresh) {
-      const user = await this.userManageService.getUserByObjectId(
+      const user = await this.authService.getUserByObjectId(
         payload._id.toString(),
       );
       if (!user) throw new Error(AuthError.UserNotFound);

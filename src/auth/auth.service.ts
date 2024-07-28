@@ -19,7 +19,7 @@ import {
   type UserStudentDocument,
 } from "src/schemas";
 
-import { AuthError } from "../common/errors";
+import { AuthError, UserManageError } from "../common/errors";
 
 import { PasswordLoginDto, TokensResponse } from "./auth.dto";
 import { DIMIJwtPayload, DIMIRefreshPayload } from "./auth.interface";
@@ -44,6 +44,18 @@ export class AuthService {
     this.configService.get<string>("GOOGLE_CLIENT_ID"),
     this.configService.get<string>("GOOGLE_CLIENT_SECRET"),
   );
+
+  async getUserByObjectId(id: string) {
+    try {
+      const user = await this.userModel.findById(id);
+      if (!user) throw new Error(UserManageError.UserNotFound);
+
+      return user;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 
   async passwordLogin(data: PasswordLoginDto) {
     const type: LoginType = "password";

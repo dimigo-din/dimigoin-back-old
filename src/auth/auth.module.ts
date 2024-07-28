@@ -15,6 +15,7 @@ import {
 
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
+import { DIMIJwtStrategy } from "./auth.strategy";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AuthService } from "./auth.service";
     DIMIJWTModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, DIMIJwtStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}
