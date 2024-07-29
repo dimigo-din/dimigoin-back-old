@@ -16,5 +16,6 @@ export const AuthError = {
 };
 
 export const UserManageError = {
+  LoginInfoUnavailable: "Auth_DB: 로그인 정보를 불러올 수 없습니다.",
   UserNotFound: "UserManage_DB: 사용자 정보를 불러올 수 없습니다.",
 };

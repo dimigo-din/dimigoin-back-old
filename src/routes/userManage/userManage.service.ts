@@ -8,7 +8,11 @@ import { v4 } from "uuid";
 import { UserManageError } from "../../common/errors";
 import { Login, type LoginDocument, User, UserDocument } from "../../schemas";
 
-import { CreatePasswordDto, CreateUserDto } from "./userManage.dto";
+import {
+  CreateDimigoLoginDTO,
+  CreatePasswordLoginDTO,
+  CreateUserDTO,
+} from "./userManage.dto";
 
 @Injectable()
 export class UserManageService {
@@ -19,7 +23,23 @@ export class UserManageService {
     private userModel: Model<UserDocument>,
   ) {}
 
-  async registerPasswordLogin(passwordDto: CreatePasswordDto) {
+  async getLogin(id) {
+    try {
+      const user = await this.userModel.findOne({ id: id });
+      if (!user) throw new Error(UserManageError.UserNotFound);
+
+      const login = await this.loginModel.find({ user: user._id });
+      if (!login) throw new Error(UserManageError.LoginInfoUnavailable);
+
+      const kinds = login.map((e) => e.type);
+      return kinds;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  }
+
+  async registerPasswordLogin(passwordDto: CreatePasswordLoginDTO) {
     try {
       const user = await this.userModel.findOne({ id: passwordDto.id });
       if (!user) throw new Error(UserManageError.UserNotFound);
@@ -36,7 +56,24 @@ export class UserManageService {
     }
   }
 
-  async registerUser(userDto: CreateUserDto) {
+  async registerDimigoLogin(dimigoDTO: CreateDimigoLoginDTO) {
+    try {
+      const user = await this.userModel.findOne({ id: dimigoDTO.id });
+      if (!user) throw new Error(UserManageError.UserNotFound);
+
+      await new this.loginModel({
+        type: "dimigo",
+        value: dimigoDTO.sub,
+        user: user._id,
+      }).save();
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async registerUser(userDto: CreateUserDTO) {
     try {
       await new this.userModel({
         id: v4().split("-").join(""),

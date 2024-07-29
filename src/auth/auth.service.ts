@@ -106,12 +106,16 @@ export class AuthService {
       if (!user) throw new Error(AuthError.UserNotFound);
 
       if (user.type === "student") {
-        const student = await this.userStudentModel.findOne({ user: user._id });
+        const student = await this.userStudentModel
+          .findOne({ user: user._id })
+          .populate("User");
         if (!student) throw new Error(AuthError.StudentNotFound);
+
+        return this.createToken(user);
       } else if (user.type === "teacher") {
-        // 선생님
+        return this.createToken(user);
       } else if (user.type === "admin") {
-        // 관리자
+        return this.createToken(user);
       } else throw new Error(AuthError.ForbiddenUserType);
 
       // return await this.userManageService.getUserByEmail();
@@ -143,7 +147,9 @@ export class AuthService {
     }
   }
 
-  async createToken(user: UserDocument): Promise<TokensResponse | null> {
+  async createToken(
+    user: UserDocument | (UserDocument & UserStudentDocument),
+  ): Promise<TokensResponse | null> {
     const accessToken = await this.jwtService.signAsync(
       {
         ...user.toJSON(),

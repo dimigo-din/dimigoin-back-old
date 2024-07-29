@@ -9,7 +9,7 @@ import {
 import { AuthError } from "../common/errors";
 
 @Injectable()
-export class DIMIStudentGuard implements CanActivate {
+export class DIMISelfGuard implements CanActivate {
   constructor() {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -17,7 +17,7 @@ export class DIMIStudentGuard implements CanActivate {
     if (request.user.type === "admin") return true;
 
     try {
-      if (request.user.type !== "student")
+      if (request.user.id !== request.body.id)
         throw new Error(AuthError.PermissionDenied);
     } catch (error) {
       console.log(error);

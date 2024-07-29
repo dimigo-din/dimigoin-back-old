@@ -1,11 +1,21 @@
-import { Body, Controller, HttpStatus, Post, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Post,
+  Request,
+  UseGuards,
+} from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard } from "../../auth/auth.guard";
-import { DIMIAdminGuard } from "../../auth/auth.guard.admin";
 import { DIMITeacherGuard } from "../../auth/auth.guard.teacher";
 
-import { CreatePasswordDto, CreateUserDto } from "./userManage.dto";
+import {
+  CreateDimigoLoginDTO,
+  CreatePasswordLoginDTO,
+  CreateUserDTO,
+} from "./userManage.dto";
 import { UserManageService } from "./userManage.service";
 
 @ApiTags("User Manage")
@@ -14,19 +24,48 @@ export class UserManageController {
   constructor(private readonly userManageService: UserManageService) {}
 
   @ApiOperation({
-    summary: "로그인 연결",
-    description: "유저에 로그인 정보를 연결합니다.",
+    summary: "연결된 로그인 목록",
+    description: "계정에 연결된 로그인 목록을 불러옵니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+  })
+  @UseGuards(DIMIJwtAuthGuard)
+  @Post("/login")
+  getLogin(@Request() req) {
+    return this.userManageService.getLogin(req.user.id);
+  }
+
+  @ApiOperation({
+    summary: "로그인 연결 - 비밀번호",
+    description: "유저에 비밀번호를 이용한 로그인 정보를 연결합니다.",
   })
   @ApiResponse({
     status: HttpStatus.OK,
     description: "로그인 연결 성공",
     type: Boolean,
   })
-  @UseGuards(DIMIJwtAuthGuard, DIMIAdminGuard)
-  @Post("/register/login/password")
-  registerLoginPassword(@Body() data: CreatePasswordDto) {
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @Post("/login/password")
+  registerPasswordLogin(@Body() data: CreatePasswordLoginDTO) {
     console.log(data);
     return this.userManageService.registerPasswordLogin(data);
+  }
+
+  @ApiOperation({
+    summary: "로그인 연결 - 디미고",
+    description: "유저에 디미고 구글 계정을 이용한 로그인 정보를 연결합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "로그인 연결 성공",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @Post("/login/dimigo")
+  registerDimigoLogin(@Body() data: CreateDimigoLoginDTO) {
+    console.log(data);
+    return this.userManageService.registerDimigoLogin(data);
   }
 
   @ApiOperation({
@@ -40,7 +79,7 @@ export class UserManageController {
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
   @Post("/register/user")
-  registerUser(@Body() data: CreateUserDto) {
+  registerUser(@Body() data: CreateUserDTO) {
     console.log(data);
     return this.userManageService.registerUser(data);
   }

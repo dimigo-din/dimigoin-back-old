@@ -3,7 +3,7 @@ import { IsString } from "class-validator";
 
 import { Gender, UserType } from "../../common/types";
 
-export class CreatePasswordDto {
+export class CreatePasswordLoginDTO {
   @ApiProperty()
   @IsString()
   id: string;
@@ -13,7 +13,17 @@ export class CreatePasswordDto {
   password: string;
 }
 
-export class CreateUserDto {
+export class CreateDimigoLoginDTO {
+  @ApiProperty()
+  @IsString()
+  id: string;
+
+  @ApiProperty()
+  @IsString()
+  sub: string;
+}
+
+export class CreateUserDTO {
   @ApiProperty()
   @IsString()
   name: string;
