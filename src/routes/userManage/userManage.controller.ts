@@ -78,7 +78,7 @@ export class UserManageController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
-  @Post("/register/user")
+  @Post("/register")
   registerUser(@Body() data: CreateUserDTO) {
     console.log(data);
     return this.userManageService.registerUser(data);
