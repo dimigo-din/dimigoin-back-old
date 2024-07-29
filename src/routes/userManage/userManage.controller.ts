@@ -15,6 +15,7 @@ import {
   CreateDimigoLoginDTO,
   CreatePasswordLoginDTO,
   CreateUserDTO,
+  CreateUserStudentDTO,
 } from "./userManage.dto";
 import { UserManageService } from "./userManage.service";
 
@@ -82,5 +83,21 @@ export class UserManageController {
   registerUser(@Body() data: CreateUserDTO) {
     console.log(data);
     return this.userManageService.registerUser(data);
+  }
+
+  @ApiOperation({
+    summary: "유저 생성",
+    description: "DB에 유저를 생성합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "유저 생성 성공",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @Post("/register/student")
+  registerUserStudent(@Body() data: CreateUserStudentDTO) {
+    console.log(data);
+    return this.userManageService.registerUserStudent(data);
   }
 }

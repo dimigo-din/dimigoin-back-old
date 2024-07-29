@@ -15,6 +15,6 @@ export interface DIMIJwtPayload {
 }
 
 export interface DIMIRefreshPayload {
-  _id: Types.ObjectId;
+  user: Types.ObjectId;
   refresh: boolean;
 }

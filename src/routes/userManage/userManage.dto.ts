@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString } from "class-validator";
+import { IsNumber } from "nestjs-swagger-dto";
 
 import { Gender, UserType } from "../../common/types";
 
@@ -39,4 +40,26 @@ export class CreateUserDTO {
   @ApiProperty()
   @IsString()
   generation: number;
+}
+
+export class CreateUserStudentDTO {
+  @ApiProperty()
+  @IsString()
+  user: string;
+
+  @ApiProperty()
+  @IsString()
+  year: number;
+
+  @ApiProperty()
+  @IsString()
+  grade: number;
+
+  @ApiProperty()
+  @IsString()
+  class: number;
+
+  @ApiProperty()
+  @IsString()
+  number: number;
 }

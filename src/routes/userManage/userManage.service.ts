@@ -6,12 +6,20 @@ import * as bcrypt from "bcrypt";
 import { v4 } from "uuid";
 
 import { UserManageError } from "../../common/errors";
-import { Login, type LoginDocument, User, UserDocument } from "../../schemas";
+import {
+  Login,
+  type LoginDocument,
+  User,
+  UserDocument,
+  UserStudent,
+  UserStudentDocument,
+} from "../../schemas";
 
 import {
   CreateDimigoLoginDTO,
   CreatePasswordLoginDTO,
   CreateUserDTO,
+  CreateUserStudentDTO,
 } from "./userManage.dto";
 
 @Injectable()
@@ -21,6 +29,8 @@ export class UserManageService {
     private loginModel: Model<LoginDocument>,
     @InjectModel(User.name)
     private userModel: Model<UserDocument>,
+    @InjectModel(UserStudent.name)
+    private userStudentModel: Model<UserStudentDocument>,
   ) {}
 
   async getLogin(id) {
@@ -79,6 +89,26 @@ export class UserManageService {
         id: v4().split("-").join(""),
         ...userDto,
       }).save();
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async registerUserStudent(userDto: CreateUserStudentDTO) {
+    try {
+      const user = await this.userModel.findById(userDto.user);
+      if (!user) throw new Error(UserManageError.UserNotFound);
+
+      await new this.userStudentModel({
+        user: user._id,
+        year: userDto.year,
+        grade: userDto.grade,
+        class: userDto.class,
+        number: userDto.number,
+      }).save();
+
       return true;
     } catch (error) {
       console.log(error);

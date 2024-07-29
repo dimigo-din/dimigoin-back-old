@@ -43,4 +43,18 @@ export class AuthController {
   dimigoLogin(@Body() data: DimigoLoginDto) {
     return this.authService.dimigoLogin(data.token);
   }
+
+  @ApiOperation({
+    summary: "토큰 갱신",
+    description: "Refresh Token을 사용하여 Access Token을 재발급합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "갱신 성공",
+    type: TokensResponse,
+  })
+  @Post("/refresh")
+  refresh(@Body() data) {
+    return this.authService.refresh(data.token);
+  }
 }

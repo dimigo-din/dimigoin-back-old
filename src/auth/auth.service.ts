@@ -22,14 +22,13 @@ import {
 import { AuthError, UserManageError } from "../common/errors";
 
 import { PasswordLoginDto, TokensResponse } from "./auth.dto";
-import { DIMIJwtPayload, DIMIRefreshPayload } from "./auth.interface";
+import { DIMIRefreshPayload } from "./auth.interface";
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-
     @InjectModel(Login.name)
     private loginModel: Model<LoginDocument>,
     @InjectModel(User.name)
@@ -73,7 +72,16 @@ export class AuthService {
       if (!bcrypt.compareSync(data.password, loginInfo.value))
         throw new Error(AuthError.PasswordMismatch);
 
-      return this.createToken(user);
+      if (user.type === "student") {
+        const student = await this.userStudentModel.findOne({ user: user._id });
+        if (!student) throw new Error(AuthError.StudentNotFound);
+
+        return this.createToken({ ...student.toJSON(), ...user.toJSON() });
+      } else if (user.type === "teacher") {
+        return this.createToken(user.toJSON());
+      } else if (user.type === "admin") {
+        return this.createToken(user.toJSON());
+      } else throw new Error(AuthError.ForbiddenUserType);
     } catch (error) {
       console.log(error);
       throw new HttpException(
@@ -96,6 +104,8 @@ export class AuthService {
       const payload = ticket.getPayload();
       if (!payload) throw new Error(AuthError.CannotGetGooglePayload);
 
+      console.log(payload.sub);
+
       const loginInfo = await this.loginModel.findOne({
         type,
         value: payload.sub,
@@ -106,19 +116,15 @@ export class AuthService {
       if (!user) throw new Error(AuthError.UserNotFound);
 
       if (user.type === "student") {
-        const student = await this.userStudentModel
-          .findOne({ user: user._id })
-          .populate("User");
+        const student = await this.userStudentModel.findOne({ user: user._id });
         if (!student) throw new Error(AuthError.StudentNotFound);
 
-        return this.createToken(user);
+        return this.createToken({ ...student.toJSON(), ...user.toJSON() });
       } else if (user.type === "teacher") {
-        return this.createToken(user);
+        return this.createToken(user.toJSON());
       } else if (user.type === "admin") {
-        return this.createToken(user);
+        return this.createToken(user.toJSON());
       } else throw new Error(AuthError.ForbiddenUserType);
-
-      // return await this.userManageService.getUserByEmail();
     } catch (error) {
       console.log(error);
       throw new HttpException(
@@ -128,13 +134,28 @@ export class AuthService {
     }
   }
 
-  async verify(token: string): Promise<DIMIJwtPayload | DIMIRefreshPayload> {
+  async refresh(token: string) {
     try {
-      const payload: DIMIJwtPayload | DIMIRefreshPayload =
+      const payload: DIMIRefreshPayload =
         await this.jwtService.verifyAsync(token);
-      return payload;
-    } catch (err) {
-      if (err.name == "TokenExpiredError") {
+      if (!payload.refresh) throw new Error(AuthError.NoRefreshToken);
+
+      const user = await this.userModel.findOne({ _id: payload.user });
+      if (!user) throw new Error(AuthError.UserNotFound);
+
+      if (user.type === "student") {
+        const student = await this.userStudentModel.findOne({ user: user._id });
+        if (!student) throw new Error(AuthError.StudentNotFound);
+
+        return this.createToken({ ...student.toJSON(), ...user.toJSON() });
+      } else if (user.type === "teacher") {
+        return this.createToken(user.toJSON());
+      } else if (user.type === "admin") {
+        return this.createToken(user.toJSON());
+      } else throw new Error(AuthError.ForbiddenUserType);
+    } catch (error) {
+      console.log(error);
+      if (error.name == "TokenExpiredError") {
         throw new HttpException(
           "토큰이 만료되었습니다.",
           HttpStatus.UNAUTHORIZED,
@@ -147,12 +168,10 @@ export class AuthService {
     }
   }
 
-  async createToken(
-    user: UserDocument | (UserDocument & UserStudentDocument),
-  ): Promise<TokensResponse | null> {
+  async createToken(user): Promise<TokensResponse | null> {
     const accessToken = await this.jwtService.signAsync(
       {
-        ...user.toJSON(),
+        ...user,
         refresh: false,
       },
       {

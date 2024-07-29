@@ -6,6 +6,7 @@ export const AuthError = {
   ForbiddenAuthType: "Auth_InValid: 허용되지 않은 인증 방식입니다.",
   ForbiddenUserType: "Auth_InValid: 허용되지 않은 유저 타입입니다.",
   PasswordMismatch: "Auth_InValid: 비밀번호가 일치하지 않습니다.",
+  NoRefreshToken: "Auth_InValid: 리프레시 토큰이 아닙니다.",
 
   PermissionDenied: "Permission: 권한이 부족합니다.",
 
