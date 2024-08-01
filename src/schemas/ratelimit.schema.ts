@@ -1,13 +1,16 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { type HydratedDocument, Types } from "mongoose";
 
+import { RateLimitTypeValues } from "../common/types";
+
 @Schema({ timestamps: false, versionKey: false })
-export class Token {
+export class RateLimit {
   @Prop({
     required: true,
     type: String,
+    enum: RateLimitTypeValues,
   })
-  refreshToken: string;
+  type: string;
 
   @Prop({
     required: true,
@@ -15,7 +18,13 @@ export class Token {
     ref: "User",
   })
   user: Types.ObjectId;
+
+  @Prop({
+    required: true,
+    type: Number,
+  })
+  time: number;
 }
 
-export const TokenSchema = SchemaFactory.createForClass(Token);
-export type TokenDocument = HydratedDocument<Token>;
+export const RateLimitSchema = SchemaFactory.createForClass(RateLimit);
+export type RateLimitDocument = HydratedDocument<RateLimit>;

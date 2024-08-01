@@ -7,6 +7,7 @@ import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
 import * as bcrypt from "bcrypt";
 import { OAuth2Client } from "google-auth-library";
+import * as moment from "moment-timezone";
 
 import { Token, TokenDocument } from "src/schemas/token.schema";
 
@@ -44,6 +45,12 @@ export class AuthService {
     this.configService.get<string>("GOOGLE_CLIENT_SECRET"),
   );
 
+  googleWebOAuthClient = new OAuth2Client(
+    this.configService.get<string>("GOOGLE_CLIENT_ID"),
+    this.configService.get<string>("GOOGLE_CLIENT_SECRET"),
+    "postmessage",
+  );
+
   async getUserByObjectId(id: string) {
     try {
       const user = await this.userModel.findById(id);
@@ -60,7 +67,7 @@ export class AuthService {
     const type: LoginType = "password";
 
     try {
-      const user = await this.userModel.findOne({ id: data.user });
+      const user = await this.userModel.findById(data.user);
       if (!user) throw new Error(AuthError.UserNotFound);
 
       const loginInfo = await this.loginModel.findOne({
@@ -84,21 +91,28 @@ export class AuthService {
       } else throw new Error(AuthError.ForbiddenUserType);
     } catch (error) {
       console.log(error);
-      throw new HttpException(
-        "비밀번호 인증에 실패하였습니다.",
-        HttpStatus.UNAUTHORIZED,
-      );
+      if (Object.values(AuthError).includes(error.message)) {
+        throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
+      } else {
+        throw new HttpException(
+          "비밀번호 인증에 실패하였습니다.",
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
     }
   }
 
-  async dimigoLogin(token: string) {
+  async dimigoLogin(token: string, isWeb: boolean) {
     const type: LoginType = "dimigo";
 
+    const currentOAuthClient = isWeb
+      ? this.googleWebOAuthClient
+      : this.googleOAuthClient;
     try {
-      const { tokens } = await this.googleOAuthClient.getToken(token);
+      const { tokens } = await currentOAuthClient.getToken(token);
       if (!tokens.id_token) throw new Error(AuthError.CannotGetGoogleIdToken);
 
-      const ticket = await this.googleOAuthClient.verifyIdToken({
+      const ticket = await currentOAuthClient.verifyIdToken({
         idToken: tokens.id_token,
       });
       const payload = ticket.getPayload();
@@ -116,7 +130,10 @@ export class AuthService {
       if (!user) throw new Error(AuthError.UserNotFound);
 
       if (user.type === "student") {
-        const student = await this.userStudentModel.findOne({ user: user._id });
+        const student = await this.userStudentModel.findOne({
+          user: user._id,
+          year: moment().year(),
+        });
         if (!student) throw new Error(AuthError.StudentNotFound);
 
         return this.createToken({ ...student.toJSON(), ...user.toJSON() });
@@ -127,10 +144,14 @@ export class AuthService {
       } else throw new Error(AuthError.ForbiddenUserType);
     } catch (error) {
       console.log(error);
-      throw new HttpException(
-        "인증되지 않은 토큰입니다.",
-        HttpStatus.UNAUTHORIZED,
-      );
+      if (Object.values(AuthError).includes(error.message)) {
+        throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
+      } else {
+        throw new HttpException(
+          "인증되지 않은 토큰입니다.",
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
     }
   }
 
@@ -147,6 +168,8 @@ export class AuthService {
         const student = await this.userStudentModel.findOne({ user: user._id });
         if (!student) throw new Error(AuthError.StudentNotFound);
 
+        await this.tokenModel.deleteOne({ refreshToken: token });
+
         return this.createToken({ ...student.toJSON(), ...user.toJSON() });
       } else if (user.type === "teacher") {
         return this.createToken(user.toJSON());
@@ -160,11 +183,14 @@ export class AuthService {
           "토큰이 만료되었습니다.",
           HttpStatus.UNAUTHORIZED,
         );
+      } else if (Object.values(AuthError).includes(error.message)) {
+        throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
+      } else {
+        throw new HttpException(
+          "인증되지 않은 토큰입니다.",
+          HttpStatus.UNAUTHORIZED,
+        );
       }
-      throw new HttpException(
-        "인증되지 않은 토큰입니다.",
-        HttpStatus.UNAUTHORIZED,
-      );
     }
   }
 

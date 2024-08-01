@@ -24,3 +24,9 @@ export class DimigoLoginDto {
   @IsString()
   token: string;
 }
+
+export class TokenRefreshDto {
+  @ApiProperty()
+  @IsString()
+  token: string;
+}

@@ -45,7 +45,7 @@ export class CreateUserDTO {
 export class CreateUserStudentDTO {
   @ApiProperty()
   @IsString()
-  user: string;
+  id: string;
 
   @ApiProperty()
   @IsString()

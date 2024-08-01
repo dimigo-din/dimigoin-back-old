@@ -9,6 +9,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard } from "../../auth/auth.guard";
+import { DIMIAdminGuard } from "../../auth/auth.guard.admin";
 import { DIMITeacherGuard } from "../../auth/auth.guard.teacher";
 
 import {
@@ -34,7 +35,7 @@ export class UserManageController {
   @UseGuards(DIMIJwtAuthGuard)
   @Post("/login")
   getLogin(@Request() req) {
-    return this.userManageService.getLogin(req.user.id);
+    return this.userManageService.getLogin(req.user._id);
   }
 
   @ApiOperation({
@@ -46,7 +47,7 @@ export class UserManageController {
     description: "로그인 연결 성공",
     type: Boolean,
   })
-  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @UseGuards(DIMIJwtAuthGuard, DIMIAdminGuard)
   @Post("/login/password")
   registerPasswordLogin(@Body() data: CreatePasswordLoginDTO) {
     console.log(data);

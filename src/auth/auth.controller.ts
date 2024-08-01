@@ -1,7 +1,20 @@
-import { Body, Controller, Get, HttpStatus, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+} from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { DimigoLoginDto, PasswordLoginDto, TokensResponse } from "./auth.dto";
+import {
+  DimigoLoginDto,
+  PasswordLoginDto,
+  TokenRefreshDto,
+  TokensResponse,
+} from "./auth.dto";
 import { AuthService } from "./auth.service";
 
 @ApiTags("Auth")
@@ -40,8 +53,8 @@ export class AuthController {
     type: TokensResponse,
   })
   @Post("/login/dimigo")
-  dimigoLogin(@Body() data: DimigoLoginDto) {
-    return this.authService.dimigoLogin(data.token);
+  dimigoLogin(@Body() data: DimigoLoginDto, @Query("isWeb") isWeb?: boolean) {
+    return this.authService.dimigoLogin(data.token, !!isWeb);
   }
 
   @ApiOperation({
@@ -54,7 +67,7 @@ export class AuthController {
     type: TokensResponse,
   })
   @Post("/refresh")
-  refresh(@Body() data) {
+  refresh(@Body() data: TokenRefreshDto) {
     return this.authService.refresh(data.token);
   }
 }

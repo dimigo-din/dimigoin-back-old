@@ -10,15 +10,6 @@ export class User {
   @Prop({
     required: true,
     type: String,
-    minlength: 4,
-    maxlength: 32,
-    unique: true,
-  })
-  id: string;
-
-  @Prop({
-    required: true,
-    type: String,
     minlength: 2,
     maxlength: 4,
   })

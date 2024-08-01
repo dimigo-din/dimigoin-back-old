@@ -35,10 +35,7 @@ export class UserManageService {
 
   async getLogin(id) {
     try {
-      const user = await this.userModel.findOne({ id: id });
-      if (!user) throw new Error(UserManageError.UserNotFound);
-
-      const login = await this.loginModel.find({ user: user._id });
+      const login = await this.loginModel.find({ user: id });
       if (!login) throw new Error(UserManageError.LoginInfoUnavailable);
 
       const kinds = login.map((e) => e.type);
@@ -85,8 +82,8 @@ export class UserManageService {
 
   async registerUser(userDto: CreateUserDTO) {
     try {
+      // TODO: check is ok when use await new this.userModel(userDto).save()
       await new this.userModel({
-        id: v4().split("-").join(""),
         ...userDto,
       }).save();
       return true;
@@ -98,7 +95,7 @@ export class UserManageService {
 
   async registerUserStudent(userDto: CreateUserStudentDTO) {
     try {
-      const user = await this.userModel.findById(userDto.user);
+      const user = await this.userModel.findById(userDto.id);
       if (!user) throw new Error(UserManageError.UserNotFound);
 
       await new this.userStudentModel({

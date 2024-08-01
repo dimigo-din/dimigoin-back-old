@@ -10,3 +10,9 @@ export type Class = (typeof ClassValues)[number];
 
 export const LoginTypeValues = ["dimigo", "password"] as const;
 export type LoginType = (typeof LoginTypeValues)[number];
+
+export const DormitoryTypeValues = ["H", "W"] as const;
+export type DormitoryType = (typeof DormitoryTypeValues)[number];
+
+export const RateLimitTypeValues = ["YoutubeSearch"] as const;
+export type RateLimitType = (typeof RateLimitTypeValues)[number];

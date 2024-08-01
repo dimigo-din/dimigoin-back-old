@@ -2,12 +2,12 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { type HydratedDocument, Types } from "mongoose";
 
 @Schema({ timestamps: false, versionKey: false })
-export class Token {
+export class Music {
   @Prop({
     required: true,
     type: String,
   })
-  refreshToken: string;
+  videoId: string;
 
   @Prop({
     required: true,
@@ -17,5 +17,5 @@ export class Token {
   user: Types.ObjectId;
 }
 
-export const TokenSchema = SchemaFactory.createForClass(Token);
-export type TokenDocument = HydratedDocument<Token>;
+export const MusicSchema = SchemaFactory.createForClass(Music);
+export type MusicDocument = HydratedDocument<Music>;

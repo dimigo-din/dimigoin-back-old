@@ -20,3 +20,9 @@ export const UserManageError = {
   LoginInfoUnavailable: "Auth_DB: 로그인 정보를 불러올 수 없습니다.",
   UserNotFound: "UserManage_DB: 사용자 정보를 불러올 수 없습니다.",
 };
+
+export const MusicError = {};
+
+export const RateLimitError = {
+  RateLimitExceeded: "RateLimit: 짧은 시간에 너무 많은 요청이 수신되었습니다.",
+};
