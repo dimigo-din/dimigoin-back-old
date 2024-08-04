@@ -14,13 +14,15 @@ import { Token, TokenDocument } from "src/schemas/token.schema";
 import {
   Login,
   type LoginDocument,
+  Password,
+  type PasswordDocument,
   User,
   type UserDocument,
   UserStudent,
   type UserStudentDocument,
 } from "src/schemas";
 
-import { AuthError, UserManageError } from "../common/errors";
+import { AuthError, ErrorHandler, UserManageError } from "../common/errors";
 
 import { PasswordLoginDto, TokensResponse } from "./auth.dto";
 import { DIMIRefreshPayload } from "./auth.interface";
@@ -38,6 +40,8 @@ export class AuthService {
     private userStudentModel: Model<UserStudentDocument>,
     @InjectModel(Token.name)
     private tokenModel: Model<TokenDocument>,
+    @InjectModel(Password.name)
+    private passwordModel: Model<PasswordDocument>,
   ) {}
 
   googleOAuthClient = new OAuth2Client(
@@ -64,20 +68,14 @@ export class AuthService {
   }
 
   async passwordLogin(data: PasswordLoginDto) {
-    const type: LoginType = "password";
-
     try {
-      const user = await this.userModel.findById(data.user);
-      if (!user) throw new Error(AuthError.UserNotFound);
-
-      const loginInfo = await this.loginModel.findOne({
-        type,
-        user: user._id,
-      });
-      if (!loginInfo) throw new Error(AuthError.LoginInfoUnavailable);
-
-      if (!bcrypt.compareSync(data.password, loginInfo.value))
+      const password = await this.passwordModel.findOne({ id: data.id });
+      if (!password) throw new Error(AuthError.LoginInfoUnavailable);
+      if (!bcrypt.compareSync(data.password, password.password))
         throw new Error(AuthError.PasswordMismatch);
+
+      const user = await this.userModel.findById(password.user);
+      if (!user) throw new Error(AuthError.UserNotFound);
 
       if (user.type === "student") {
         const student = await this.userStudentModel.findOne({ user: user._id });
@@ -91,14 +89,11 @@ export class AuthService {
       } else throw new Error(AuthError.ForbiddenUserType);
     } catch (error) {
       console.log(error);
-      if (Object.values(AuthError).includes(error.message)) {
-        throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
-      } else {
-        throw new HttpException(
-          "비밀번호 인증에 실패하였습니다.",
-          HttpStatus.UNAUTHORIZED,
-        );
-      }
+      ErrorHandler(AuthError, error, HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        "비밀번호 인증에 실패하였습니다.",
+        HttpStatus.UNAUTHORIZED,
+      );
     }
   }
 
@@ -144,14 +139,11 @@ export class AuthService {
       } else throw new Error(AuthError.ForbiddenUserType);
     } catch (error) {
       console.log(error);
-      if (Object.values(AuthError).includes(error.message)) {
-        throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
-      } else {
-        throw new HttpException(
-          "인증되지 않은 토큰입니다.",
-          HttpStatus.UNAUTHORIZED,
-        );
-      }
+      ErrorHandler(AuthError, error, HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        "인증되지 않은 토큰입니다.",
+        HttpStatus.UNAUTHORIZED,
+      );
     }
   }
 
@@ -178,13 +170,12 @@ export class AuthService {
       } else throw new Error(AuthError.ForbiddenUserType);
     } catch (error) {
       console.log(error);
+      ErrorHandler(AuthError, error, HttpStatus.UNAUTHORIZED);
       if (error.name == "TokenExpiredError") {
         throw new HttpException(
           "토큰이 만료되었습니다.",
           HttpStatus.UNAUTHORIZED,
         );
-      } else if (Object.values(AuthError).includes(error.message)) {
-        throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
       } else {
         throw new HttpException(
           "인증되지 않은 토큰입니다.",

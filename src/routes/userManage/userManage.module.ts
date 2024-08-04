@@ -4,6 +4,8 @@ import { MongooseModule } from "@nestjs/mongoose";
 import {
   Login,
   LoginSchema,
+  Password,
+  PasswordSchema,
   User,
   UserSchema,
   UserStudent,
@@ -19,6 +21,7 @@ import { UserManageService } from "./userManage.service";
       { name: Login.name, schema: LoginSchema },
       { name: User.name, schema: UserSchema },
       { name: UserStudent.name, schema: UserStudentSchema },
+      { name: Password.name, schema: PasswordSchema },
     ]),
   ],
   controllers: [UserManageController],

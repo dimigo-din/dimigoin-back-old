@@ -3,7 +3,6 @@ import type { Model } from "mongoose";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import * as bcrypt from "bcrypt";
-import { v4 } from "uuid";
 
 import { UserManageError } from "../../common/errors";
 import {
@@ -13,6 +12,8 @@ import {
   UserDocument,
   UserStudent,
   UserStudentDocument,
+  Password,
+  PasswordDocument,
 } from "../../schemas";
 
 import {
@@ -27,6 +28,8 @@ export class UserManageService {
   constructor(
     @InjectModel(Login.name)
     private loginModel: Model<LoginDocument>,
+    @InjectModel(Password.name)
+    private passwordModel: Model<PasswordDocument>,
     @InjectModel(User.name)
     private userModel: Model<UserDocument>,
     @InjectModel(UserStudent.name)
@@ -46,15 +49,21 @@ export class UserManageService {
     }
   }
 
-  async registerPasswordLogin(passwordDto: CreatePasswordLoginDTO) {
+  async registerPasswordLogin(
+    uid: string,
+    passwordDto: CreatePasswordLoginDTO,
+  ) {
     try {
-      const user = await this.userModel.findOne({ id: passwordDto.id });
-      if (!user) throw new Error(UserManageError.UserNotFound);
+      const password = await new this.passwordModel({
+        id: passwordDto.id,
+        password: bcrypt.hashSync(passwordDto.password, 5),
+        user: uid,
+      }).save();
 
       await new this.loginModel({
         type: "password",
-        value: bcrypt.hashSync(passwordDto.password, 5),
-        user: user._id,
+        value: password._id,
+        user: uid,
       }).save();
       return true;
     } catch (error) {

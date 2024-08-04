@@ -1,3 +1,5 @@
+import { HttpException } from "@nestjs/common";
+
 export const AuthError = {
   LoginInfoUnavailable: "Auth_DB: 로그인 정보를 불러올 수 없습니다.",
   UserNotFound: "Auth_DB: 사용자 정보를 찾을 수 없습니다.",
@@ -8,7 +10,7 @@ export const AuthError = {
   PasswordMismatch: "Auth_InValid: 비밀번호가 일치하지 않습니다.",
   NoRefreshToken: "Auth_InValid: 리프레시 토큰이 아닙니다.",
 
-  PermissionDenied: "Permission: 권한이 부족합니다.",
+  PermissionDenied: "Auth_Permission: 권한이 부족합니다.",
 
   CannotGetGoogleIdToken:
     "Auth_Google: 구글 토큰에서 id_token을 가져올 수 없습니다.",
@@ -17,12 +19,26 @@ export const AuthError = {
 };
 
 export const UserManageError = {
-  LoginInfoUnavailable: "Auth_DB: 로그인 정보를 불러올 수 없습니다.",
-  UserNotFound: "UserManage_DB: 사용자 정보를 불러올 수 없습니다.",
+  LoginInfoUnavailable: "UserManage_L-DB: 로그인 정보를 불러올 수 없습니다.",
+  UserNotFound: "UserManage_U-DB: 사용자 정보를 불러올 수 없습니다.",
 };
 
-export const MusicError = {};
+export const MusicError = {
+  AlreadyApplied: "Music_AlreadyApplied: 이미 해당 기상송이 신청되었습니다.",
+
+  InvalidVideoId:
+    "Music_VideoIdInvalid: 잘못된 형식의 유튜브 비디오 아이디를 제출하였습니다.",
+  DailyApplyLimitExceeded:
+    "Music_DailyApplyLimitExceeded: 하루 최대 가능한 기상송 등록 건수에 도달하였습니다.",
+};
 
 export const RateLimitError = {
-  RateLimitExceeded: "RateLimit: 짧은 시간에 너무 많은 요청이 수신되었습니다.",
+  RateLimitExceeded:
+    "RateLimit_TooManyRequest: 짧은 시간에 너무 많은 요청이 수신되었습니다.",
+};
+
+export const ErrorHandler = (base, error, type) => {
+  if (Object.values(base).includes(error.message)) {
+    throw new HttpException(error.message, type);
+  }
 };

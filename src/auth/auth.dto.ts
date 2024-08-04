@@ -12,7 +12,7 @@ export class TokensResponse {
 export class PasswordLoginDto {
   @ApiProperty()
   @IsString()
-  user: string;
+  id: string;
 
   @ApiProperty()
   @IsString()

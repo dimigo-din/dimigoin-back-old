@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString } from "class-validator";
-import { IsNumber } from "nestjs-swagger-dto";
 
 import { Gender, UserType } from "../../common/types";
 

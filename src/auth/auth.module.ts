@@ -11,6 +11,8 @@ import {
   UserSchema,
   UserStudent,
   UserStudentSchema,
+  Password,
+  PasswordSchema,
 } from "src/schemas";
 
 import { AuthController } from "./auth.controller";
@@ -24,6 +26,7 @@ import { DIMIJwtStrategy } from "./auth.strategy";
       { name: User.name, schema: UserSchema },
       { name: UserStudent.name, schema: UserStudentSchema },
       { name: Token.name, schema: TokenSchema },
+      { name: Password.name, schema: PasswordSchema },
     ]),
     DIMIJWTModule,
   ],

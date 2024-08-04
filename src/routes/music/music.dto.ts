@@ -8,6 +8,12 @@ export class SearchDTO {
   query: string;
 }
 
+export class ApplyDTO {
+  @ApiProperty()
+  @IsString()
+  videoId: string;
+}
+
 class YouTubeSearchResultThumbnails {
   @ApiProperty()
   @IsString()

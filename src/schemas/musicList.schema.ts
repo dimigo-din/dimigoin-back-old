@@ -2,7 +2,13 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { type HydratedDocument, Types } from "mongoose";
 
 @Schema({ timestamps: false, versionKey: false })
-export class Music {
+export class MusicList {
+  @Prop({
+    required: true,
+    type: Number,
+  })
+  week: number;
+
   @Prop({
     required: true,
     type: String,
@@ -17,5 +23,5 @@ export class Music {
   user: Types.ObjectId;
 }
 
-export const MusicSchema = SchemaFactory.createForClass(Music);
-export type MusicDocument = HydratedDocument<Music>;
+export const MusicListSchema = SchemaFactory.createForClass(MusicList);
+export type MusicListDocument = HydratedDocument<MusicList>;

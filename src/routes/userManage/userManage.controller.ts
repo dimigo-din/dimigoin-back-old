@@ -49,9 +49,9 @@ export class UserManageController {
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIAdminGuard)
   @Post("/login/password")
-  registerPasswordLogin(@Body() data: CreatePasswordLoginDTO) {
+  registerPasswordLogin(@Request() req, @Body() data: CreatePasswordLoginDTO) {
     console.log(data);
-    return this.userManageService.registerPasswordLogin(data);
+    return this.userManageService.registerPasswordLogin(req.user._id, data);
   }
 
   @ApiOperation({
