@@ -14,6 +14,8 @@ export class DIMITeacherGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+    if (request.user.type === "admin") return true;
+
     try {
       if (request.user.type !== "teacher")
         throw new Error(AuthError.PermissionDenied);

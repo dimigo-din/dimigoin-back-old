@@ -9,7 +9,7 @@ export class TokensResponse {
   refreshToken: string;
 }
 
-export class PasswordLoginDto {
+export class PasswordLoginDTO {
   @ApiProperty()
   @IsString()
   id: string;
@@ -19,13 +19,13 @@ export class PasswordLoginDto {
   password: string;
 }
 
-export class DimigoLoginDto {
+export class DimigoLoginDTO {
   @ApiProperty()
   @IsString()
   token: string;
 }
 
-export class TokenRefreshDto {
+export class TokenRefreshDTO {
   @ApiProperty()
   @IsString()
   token: string;

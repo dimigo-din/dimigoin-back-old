@@ -1,4 +1,4 @@
-import { HttpException } from "@nestjs/common";
+import { HttpException, HttpStatus } from "@nestjs/common";
 
 export const AuthError = {
   LoginInfoUnavailable: "Auth_DB: 로그인 정보를 불러올 수 없습니다.",
@@ -24,12 +24,25 @@ export const UserManageError = {
 };
 
 export const MusicError = {
-  AlreadyApplied: "Music_AlreadyApplied: 이미 해당 기상송이 신청되었습니다.",
-
   InvalidVideoId:
     "Music_VideoIdInvalid: 잘못된 형식의 유튜브 비디오 아이디를 제출하였습니다.",
-  DailyApplyLimitExceeded:
+
+  AlreadyApplied: "Music_AlreadyApplied: 이미 해당 기상송이 신청되었습니다.",
+
+  AlreadyVoted:
+    "Music_AlreadyVoted: 사용자가 이미 해당 기상송을 투표하였습니다.",
+  DailyVoteLimitExceeded:
     "Music_DailyApplyLimitExceeded: 하루 최대 가능한 기상송 등록 건수에 도달하였습니다.",
+};
+
+export const MusicManageError = {
+  InvalidVideoId:
+    "MusicManage_VideoIdInvalid: 잘못된 형식의 유튜브 비디오 아이디를 제출하였습니다.",
+
+  AlreadyApplied:
+    "MusicManage_AlreadyApplied: 이미 해당 기상송이 신청되었습니다.",
+
+  NotApplied: "MusicManage_NotApplied: 신청되지 않은 기상송입니다.",
 };
 
 export const RateLimitError = {
@@ -37,7 +50,12 @@ export const RateLimitError = {
     "RateLimit_TooManyRequest: 짧은 시간에 너무 많은 요청이 수신되었습니다.",
 };
 
-export const ErrorHandler = (base, error, type) => {
+/**
+ *  @param { Object } base - Error bases
+ *  @param { Error } error - Error message
+ *  @param { HttpStatus } type - Http response code
+ */
+export const ErrorHandler = (base: object, error: Error, type: HttpStatus) => {
   if (Object.values(base).includes(error.message)) {
     throw new HttpException(error.message, type);
   }

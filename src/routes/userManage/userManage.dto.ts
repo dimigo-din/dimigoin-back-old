@@ -6,6 +6,10 @@ import { Gender, UserType } from "../../common/types";
 export class CreatePasswordLoginDTO {
   @ApiProperty()
   @IsString()
+  user: string;
+
+  @ApiProperty()
+  @IsString()
   id: string;
 
   @ApiProperty()

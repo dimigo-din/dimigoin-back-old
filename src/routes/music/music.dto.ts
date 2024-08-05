@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString } from "class-validator";
-import { IsNumber } from "nestjs-swagger-dto";
+import { IsBoolean, IsNumber } from "nestjs-swagger-dto";
 
 export class SearchDTO {
   @ApiProperty()
@@ -12,6 +12,16 @@ export class ApplyDTO {
   @ApiProperty()
   @IsString()
   videoId: string;
+}
+
+export class VoteDTO {
+  @ApiProperty()
+  @IsString()
+  videoId: string;
+
+  @ApiProperty()
+  @IsBoolean()
+  isUpVote: boolean;
 }
 
 class YouTubeSearchResultThumbnails {

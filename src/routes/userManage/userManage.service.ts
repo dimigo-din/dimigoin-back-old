@@ -49,21 +49,18 @@ export class UserManageService {
     }
   }
 
-  async registerPasswordLogin(
-    uid: string,
-    passwordDto: CreatePasswordLoginDTO,
-  ) {
+  async registerPasswordLogin(passwordDto: CreatePasswordLoginDTO) {
     try {
       const password = await new this.passwordModel({
         id: passwordDto.id,
         password: bcrypt.hashSync(passwordDto.password, 5),
-        user: uid,
+        user: passwordDto.user,
       }).save();
 
       await new this.loginModel({
         type: "password",
         value: password._id,
-        user: uid,
+        user: passwordDto.user,
       }).save();
       return true;
     } catch (error) {

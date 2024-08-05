@@ -9,8 +9,14 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard } from "../../auth/auth.guard";
+import { DIMIStudentGuard } from "../../auth/auth.guard.student";
 
-import { ApplyDTO, SearchDTO, YouTubeSearchResultsDTO } from "./music.dto";
+import {
+  ApplyDTO,
+  SearchDTO,
+  VoteDTO,
+  YouTubeSearchResultsDTO,
+} from "./music.dto";
 import { MusicService } from "./music.service";
 
 @ApiTags("Music")
@@ -27,7 +33,7 @@ export class MusicController {
     description: "음악 목록",
     type: [YouTubeSearchResultsDTO],
   })
-  @UseGuards(DIMIJwtAuthGuard)
+  @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
   @Post("/search")
   search(@Request() req, @Body() data: SearchDTO) {
     return this.musicService.search(req.user._id, data.query);
@@ -42,7 +48,28 @@ export class MusicController {
     description: "성공 여부",
     type: Boolean,
   })
+  @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
+  @Post("/apply")
   apply(@Request() req, @Body() data: ApplyDTO) {
     return this.musicService.applyMusic(req.user._id, data.videoId);
+  }
+
+  @ApiOperation({
+    summary: "기상송 투표",
+    description: "등록되어있는 기상송을 투표합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "성공 여부",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
+  @Post("/vote")
+  vote(@Request() req, @Body() data: VoteDTO) {
+    return this.musicService.voteMusic(
+      req.user._id,
+      data.videoId,
+      data.isUpVote,
+    );
   }
 }

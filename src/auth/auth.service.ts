@@ -24,7 +24,7 @@ import {
 
 import { AuthError, ErrorHandler, UserManageError } from "../common/errors";
 
-import { PasswordLoginDto, TokensResponse } from "./auth.dto";
+import { PasswordLoginDTO, TokensResponse } from "./auth.dto";
 import { DIMIRefreshPayload } from "./auth.interface";
 
 @Injectable()
@@ -67,7 +67,7 @@ export class AuthService {
     }
   }
 
-  async passwordLogin(data: PasswordLoginDto) {
+  async passwordLogin(data: PasswordLoginDTO) {
     try {
       const password = await this.passwordModel.findOne({ id: data.id });
       if (!password) throw new Error(AuthError.LoginInfoUnavailable);
@@ -198,7 +198,7 @@ export class AuthService {
 
     const refreshToken = await this.jwtService.signAsync(
       {
-        user: user._id,
+        _id: user._id,
         refresh: true,
       },
       {

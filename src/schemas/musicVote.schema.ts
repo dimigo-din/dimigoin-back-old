@@ -5,6 +5,17 @@ import { HydratedDocument, Types } from "mongoose";
 export class MusicVote {
   @Prop({
     required: true,
+    type: String,
+  })
+  week: string;
+  @Prop({
+    required: true,
+    type: String,
+  })
+  day: string;
+
+  @Prop({
+    required: true,
     type: Types.ObjectId,
     ref: "User",
   })

@@ -5,9 +5,9 @@ import { type HydratedDocument, Types } from "mongoose";
 export class MusicList {
   @Prop({
     required: true,
-    type: Number,
+    type: String,
   })
-  week: number;
+  week: string;
 
   @Prop({
     required: true,
@@ -21,6 +21,12 @@ export class MusicList {
     ref: "User",
   })
   user: Types.ObjectId;
+
+  @Prop({
+    required: false,
+    type: String,
+  })
+  selectedDate: string; // historize selected date yyyyddd
 }
 
 export const MusicListSchema = SchemaFactory.createForClass(MusicList);
