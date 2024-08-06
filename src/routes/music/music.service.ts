@@ -30,7 +30,84 @@ export class MusicService {
     private rateLimitModel: Model<RateLimitDocument>,
   ) {}
 
-  // TODO: Make list function that returns musicList without selected is true
+  // Warning: 이건 주석 없으면 못읽는다 ㄹㅇ
+  async list(user) {
+    const week = moment().format("yyyyww");
+
+    try {
+      // 이번주에 신청된 전체 기상송 목록
+      const musics = await this.musicListModel.find({
+        week,
+        selectedDate: null,
+      });
+
+      // 내 좋아요와 싫어요들
+      const myVotes = await this.musicVoteModel.find({ week, user });
+
+      // 기상송 별 좋아요 / 싫어요
+      const votes = (
+        await this.musicVoteModel.aggregate([
+          { $match: { week } },
+          {
+            $group: {
+              _id: {
+                target: "$target",
+                isUpVote: "$isUpVote",
+              },
+              count: { $sum: 1 },
+            },
+          },
+        ])
+      ).map((v) => {
+        // 이놈이 votes에 최종 진화(?)
+        return {
+          target: v._id.target,
+          isUpVote: v._id.isUpVote,
+          count: v.count,
+        };
+      });
+
+      // 정리해서 보내주기 리턴 형식은 Music DTO에 SongList에 명시됨
+      return Promise.all(
+        musics.map(async (m) => {
+          // 음악 제목과 썸네일을 가져오기 위한 api
+          const musicInfo = await (
+            await fetch(
+              `https://www.youtube.com/oembed?url=youtube.com/watch?v=${m.videoId}`,
+            )
+          ).json();
+
+          // 특정 기상송의 투표 집계
+          const vote = votes.filter((v) => v.target.equals(m._id));
+          const upVote = (vote.find((v) => v.isUpVote) || { count: 0 }).count;
+          const downVote = (vote.find((v) => !v.isUpVote) || { count: 0 })
+            .count;
+
+          const doILike = !!myVotes.find(
+            (v) => v.target.equals(m._id) && v.isUpVote,
+          );
+          const doIHate = !doILike;
+
+          return {
+            id: m.videoId,
+            title: musicInfo.title,
+            thumbnail: musicInfo.thumbnail_url,
+            upVote,
+            downVote,
+            doILike,
+            doIHate,
+          };
+        }),
+      );
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(MusicError, error, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        "음악 검색에 실패하였습니다.",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 
   async search(user: string, query: string) {
     const type: RateLimitType = "YoutubeSearch";
