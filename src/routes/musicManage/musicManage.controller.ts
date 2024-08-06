@@ -8,8 +8,8 @@ import {
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { DIMIJwtAuthGuard } from "../../auth/auth.guard";
-import { DIMITeacherGuard } from "../../auth/auth.guard.teacher";
+import { DIMIJwtAuthGuard } from "../../auth/guards/auth.guard";
+import { DIMITeacherGuard } from "../../auth/guards/auth.guard.teacher";
 
 import { DeleteDTO, SelectDTO } from "./musicManage.dto";
 import { MusicManageService } from "./musicManage.service";
