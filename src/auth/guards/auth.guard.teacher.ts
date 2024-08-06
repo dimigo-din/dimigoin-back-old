@@ -6,7 +6,7 @@ import {
   HttpStatus,
 } from "@nestjs/common";
 
-import { AuthError } from "../common/errors";
+import { AuthError } from "../../common/errors";
 
 @Injectable()
 export class DIMITeacherGuard implements CanActivate {
