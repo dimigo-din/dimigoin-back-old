@@ -56,7 +56,8 @@ export class MusicController {
 
   @ApiOperation({
     summary: "기상송 투표",
-    description: "등록되어있는 기상송을 투표합니다.",
+    description:
+      "등록되어있는 기상송을 투표합니다. 만약 등록이 안되어있다면, 등록도 같이 진행합니다.",
   })
   @ApiResponse({
     status: HttpStatus.OK,

@@ -7,6 +7,12 @@ export class MusicList {
     required: true,
     type: String,
   })
+  day: string;
+
+  @Prop({
+    required: true,
+    type: String,
+  })
   week: string;
 
   @Prop({

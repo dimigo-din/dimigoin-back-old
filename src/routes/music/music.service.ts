@@ -70,6 +70,7 @@ export class MusicService {
   }
 
   async applyMusic(user, videoId) {
+    const day = moment().format("yyyyMMDD");
     const week = moment().format("yyyyww");
 
     try {
@@ -84,6 +85,7 @@ export class MusicService {
       if (listCheck.length > 0) throw new Error(MusicError.AlreadyApplied);
 
       await new this.musicListModel({
+        day,
         week,
         videoId,
         user,
@@ -105,10 +107,6 @@ export class MusicService {
     const week = moment().format("yyyyww");
 
     try {
-      const userVotes = await this.musicVoteModel.find({ day, user });
-      if (!!userVotes && userVotes.length > 3)
-        throw new Error(MusicError.DailyVoteLimitExceeded);
-
       const isApplied = await this.musicListModel.findOne({ week, videoId });
       if (!isApplied) await this.applyMusic(user, videoId); // 이거 유지할지 고민중입니당.
 
@@ -121,6 +119,10 @@ export class MusicService {
       });
       if (userVote) userVote.deleteOne();
       if (userVote && userVote.isUpVote === isUpVote) return true;
+
+      const userVotes = await this.musicVoteModel.find({ day, user });
+      if (!!userVotes && userVotes.length > 3)
+        throw new Error(MusicError.DailyVoteLimitExceeded);
 
       await new this.musicVoteModel({
         week,
