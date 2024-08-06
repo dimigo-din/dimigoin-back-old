@@ -25,6 +25,21 @@ export class MusicController {
   constructor(private readonly musicService: MusicService) {}
 
   @ApiOperation({
+    summary: "기상송 목록",
+    description: "등록된 기상송을 확인합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "기상송 목록",
+    type: [YouTubeSearchResultsDTO],
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
+  @Post("/list")
+  list(@Request() req) {
+    return this.musicService.list(req.user._id);
+  }
+
+  @ApiOperation({
     summary: "음악 검색",
     description: "기상곡에 등록할 음악을 검색합니다.",
   })

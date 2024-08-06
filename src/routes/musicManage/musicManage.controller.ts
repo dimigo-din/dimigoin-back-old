@@ -14,7 +14,7 @@ import { DIMITeacherGuard } from "../../auth/guards/auth.guard.teacher";
 import { DeleteDTO, SelectDTO } from "./musicManage.dto";
 import { MusicManageService } from "./musicManage.service";
 
-@ApiTags("MusicManage")
+@ApiTags("Music Manage")
 @Controller("/manage/music")
 export class MusicManageController {
   constructor(private readonly musicManageService: MusicManageService) {}

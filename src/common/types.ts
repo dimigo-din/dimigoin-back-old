@@ -11,8 +11,15 @@ export type Class = (typeof ClassValues)[number];
 export const LoginTypeValues = ["dimigo", "password"] as const;
 export type LoginType = (typeof LoginTypeValues)[number];
 
-export const DormitoryTypeValues = ["H", "W"] as const;
-export type DormitoryType = (typeof DormitoryTypeValues)[number];
-
 export const RateLimitTypeValues = ["YoutubeSearch"] as const;
 export type RateLimitType = (typeof RateLimitTypeValues)[number];
+
+export const MachineTypeValues = ["washer", "dryer"] as const;
+export type MachineType = (typeof MachineTypeValues)[number];
+
+export const DormitoryFloorValues = [1, 2, 3, 4, 5] as const;
+export type DormitoryFloorType = (typeof DormitoryFloorValues)[number];
+
+export const DormitoryMachinePosValues = ["L", "M", "R", "D"] as const;
+export type DormitoryMachinePosType =
+  (typeof DormitoryMachinePosValues)[number];

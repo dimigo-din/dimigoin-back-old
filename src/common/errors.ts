@@ -50,6 +50,18 @@ export const RateLimitError = {
     "RateLimit_TooManyRequest: 짧은 시간에 너무 많은 요청이 수신되었습니다.",
 };
 
+export const LaundryError = {};
+
+export const LaundryManageError = {
+  InvalidGender: "LaundryManage: 올바르지 않은 성별입니다.",
+  InvalidFloor: "LaundryManage: 허용되지 않은 기숙사 층계입니다.",
+  InvalidPos: "LaundryManage: 허용되지 않은 기기 위치입니다.",
+  InvalidMachine: "LaundryManage: 허용되지 않은 기기 종류입니다.",
+  InvalidGrade: "LaundryManage: 올바르지 않은 학년 값입니다.",
+
+  MachineNotFound: "LaundryManage: 존재하지 않는 기기입니다.",
+};
+
 /**
  *  @param { Object } base - Error bases
  *  @param { Error } error - Error message
