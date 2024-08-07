@@ -3,6 +3,8 @@ import { type HydratedDocument, Types } from "mongoose";
 
 import { RateLimitTypeValues } from "../common/types";
 
+import { User } from "./user.schema";
+
 @Schema({ timestamps: false, versionKey: false })
 export class RateLimit {
   @Prop({
@@ -15,7 +17,7 @@ export class RateLimit {
   @Prop({
     required: true,
     type: Types.ObjectId,
-    ref: "User",
+    ref: User.name,
   })
   user: Types.ObjectId;
 

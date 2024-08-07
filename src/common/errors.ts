@@ -60,6 +60,11 @@ export const LaundryManageError = {
   InvalidGrade: "LaundryManage: 올바르지 않은 학년 값입니다.",
 
   MachineNotFound: "LaundryManage: 존재하지 않는 기기입니다.",
+
+  InvalidTimeFormat: "LaundryManage: 올바르지 않은 시간 형식입니다.",
+  InvalidWeekdayFormat: "LaundryManage: 올바르지 않은 요일 형식입니다.",
+
+  TimeNotFound: "LaundryManage: 존재하지 않는 시간표입니다.",
 };
 
 /**

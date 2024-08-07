@@ -1,12 +1,14 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Types, type HydratedDocument } from "mongoose";
 
+import { User } from "./user.schema";
+
 @Schema({ timestamps: false, versionKey: false })
 export class Password {
   @Prop({
     required: true,
     type: Types.ObjectId,
-    ref: "User",
+    ref: User.name,
   })
   user: Types.ObjectId;
 

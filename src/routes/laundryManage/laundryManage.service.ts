@@ -2,6 +2,7 @@ import type { Model } from "mongoose";
 
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
+import * as moment from "moment-timezone";
 
 import { ErrorHandler, LaundryManageError } from "../../common/errors";
 import {
@@ -10,25 +11,45 @@ import {
   DormitoryMachinePosValues,
   Gender,
   GenderValues,
-  Grade,
-  GradeValues,
   MachineType,
   MachineTypeValues,
 } from "../../common/types";
 import { LaundryTable, LaundryTableDocument } from "../../schemas";
+import {
+  LaundryTimetable,
+  LaundryTimetableDocument,
+} from "../../schemas/laundryTimetable.schema";
+
+import { LaundryTimeDTO } from "./laundryManage.dto";
 
 @Injectable()
 export class LaundryManageService {
   constructor(
     @InjectModel(LaundryTable.name)
     private laundryTableModel: Model<LaundryTableDocument>,
+    @InjectModel(LaundryTimetable.name)
+    private laundryTimetableModel: Model<LaundryTimetableDocument>,
   ) {}
 
-  async apply(
+  async machineList() {
+    try {
+      return await this.laundryTableModel.find({});
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(LaundryManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        "기기 목록을 불러오는데 실패하였습니다.",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async machineApply(
     gender: Gender,
     floor: DormitoryFloorType,
     pos: DormitoryMachinePosType,
     machineType: MachineType,
+    allow: number[],
   ) {
     try {
       if (!GenderValues.includes(gender))
@@ -52,6 +73,7 @@ export class LaundryManageService {
         floor,
         pos,
         type: machineType,
+        allow,
       }).save();
 
       return true;
@@ -65,7 +87,7 @@ export class LaundryManageService {
     }
   }
 
-  async delete(id) {
+  async machineDelete(id: string) {
     try {
       const machine = await this.laundryTableModel.findById(id);
       if (!machine) throw new Error(LaundryManageError.MachineNotFound);
@@ -77,6 +99,64 @@ export class LaundryManageService {
       ErrorHandler(LaundryManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
       throw new HttpException(
         "기기 삭제에 실패하였습니다.",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async timeList() {
+    try {
+      return await this.laundryTimetableModel.find({});
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(LaundryManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        "세탁 스케줄 목록을 불러오는데 실패하였습니다.",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async timeApply(laundryTime: LaundryTimeDTO) {
+    try {
+      if (!MachineTypeValues.includes(laundryTime.type))
+        throw new Error(LaundryManageError.InvalidMachine);
+
+      if (!moment(laundryTime.time, "HH:mm", true).isValid())
+        throw new Error(LaundryManageError.InvalidTimeFormat);
+
+      if (!laundryTime.available.every((w: number) => w === 0 || w === 1))
+        throw new Error(LaundryManageError.InvalidWeekdayFormat);
+
+      const result = await new this.laundryTimetableModel({
+        type: laundryTime.type,
+        time: laundryTime.time,
+        available: laundryTime.available,
+      }).save();
+      console.log(result);
+      return true;
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(LaundryManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        "세탁 스케줄 등록에 실패하였습니다.",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async timeDelete(id: string) {
+    try {
+      const time = await this.laundryTimetableModel.findById(id);
+      if (!time) throw new Error(LaundryManageError.TimeNotFound);
+
+      await time.deleteOne();
+      return true;
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(LaundryManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        "스케줄 삭제에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

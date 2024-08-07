@@ -31,7 +31,7 @@ export class MusicService {
   ) {}
 
   // Warning: 이건 주석 없으면 못읽는다 ㄹㅇ
-  async list(user) {
+  async list(user: string) {
     const week = moment().format("yyyyww");
 
     try {
@@ -146,7 +146,7 @@ export class MusicService {
     }
   }
 
-  async applyMusic(user, videoId) {
+  async applyMusic(user: string, videoId: string) {
     const day = moment().format("yyyyMMDD");
     const week = moment().format("yyyyww");
 

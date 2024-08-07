@@ -5,12 +5,14 @@ import { Types, type HydratedDocument } from "mongoose";
 
 import { ClassValues, GradeValues } from "src/common/types";
 
+import { User } from "./user.schema";
+
 @Schema({ timestamps: false, versionKey: false })
 export class UserStudent {
   @Prop({
     required: true,
     type: Types.ObjectId,
-    ref: "User",
+    ref: User.name,
   })
   user: Types.ObjectId;
 

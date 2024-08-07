@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument, Types } from "mongoose";
 
+import { MusicList } from "./musicList.schema";
+import { User } from "./user.schema";
+
 @Schema({ timestamps: false, versionKey: false })
 export class MusicVote {
   @Prop({
@@ -17,14 +20,14 @@ export class MusicVote {
   @Prop({
     required: true,
     type: Types.ObjectId,
-    ref: "User",
+    ref: User.name,
   })
   user: Types.ObjectId;
 
   @Prop({
     required: true,
     type: Types.ObjectId,
-    ref: "MusicList",
+    ref: MusicList.name,
   })
   target: Types.ObjectId;
 

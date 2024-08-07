@@ -10,8 +10,6 @@ import {
   MusicListDocument,
   MusicVote,
   MusicVoteDocument,
-  RateLimit,
-  RateLimitDocument,
 } from "../../schemas";
 
 @Injectable()
@@ -23,7 +21,7 @@ export class MusicManageService {
     private musicVoteModel: Model<MusicVoteDocument>,
   ) {}
 
-  async applyMusic(user, videoId) {
+  async applyMusic(user: string, videoId: string) {
     const week = moment().format("yyyyww");
 
     try {
@@ -58,7 +56,7 @@ export class MusicManageService {
     }
   }
 
-  async select(user, videoId) {
+  async select(user: string, videoId: string) {
     const day = moment().format("yyyyMMDD");
     const week = moment().format("yyyyww");
 
@@ -86,7 +84,7 @@ export class MusicManageService {
     }
   }
 
-  async delete(videoId) {
+  async delete(videoId: string) {
     const week = moment().format("yyyyww");
 
     try {
@@ -99,7 +97,7 @@ export class MusicManageService {
       console.log(error);
       ErrorHandler(MusicManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
       throw new HttpException(
-        "기상송 확정에 실패하였습니다.",
+        "기상송 삭제에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

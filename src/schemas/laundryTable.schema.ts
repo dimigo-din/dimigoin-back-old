@@ -9,8 +9,6 @@ import {
   DormitoryMachinePosValues,
   Gender,
   GenderValues,
-  Grade,
-  GradeValues,
   MachineTypeValues,
 } from "../common/types";
 
@@ -49,6 +47,12 @@ export class LaundryTable {
     enum: DormitoryMachinePosValues,
   })
   pos: DormitoryMachinePosType;
+
+  @Prop({
+    required: true,
+    type: [Number],
+  })
+  allow: number[];
 }
 
 export const LaundryTableSchema = SchemaFactory.createForClass(LaundryTable);

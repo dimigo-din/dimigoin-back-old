@@ -36,7 +36,7 @@ export class UserManageService {
     private userStudentModel: Model<UserStudentDocument>,
   ) {}
 
-  async getLogin(id) {
+  async getLogin(id: string) {
     try {
       const login = await this.loginModel.find({ user: id });
       if (!login) throw new Error(UserManageError.LoginInfoUnavailable);
