@@ -30,7 +30,7 @@ export class DIMIJwtStrategy extends PassportStrategy(Strategy, "jwt") {
         payload._id.toString(),
       );
       if (!user) throw new Error(AuthError.UserNotFound);
-      return done(null, user);
+      return done(null, payload);
     } else {
       throw new HttpException(
         "잘못된 토큰 형식입니다. Access Token을 전달해주세요.",
