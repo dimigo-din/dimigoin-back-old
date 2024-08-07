@@ -1,12 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString } from "class-validator";
 
-import {
-  Gender,
-  GenderValues,
-  UserType,
-  UserTypeValues,
-} from "../../common/types";
+import { Gender, UserType } from "../../common/types";
 
 export class CreatePasswordLoginDTO {
   @ApiProperty()
