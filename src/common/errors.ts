@@ -50,7 +50,12 @@ export const RateLimitError = {
     "RateLimit_TooManyRequest: 짧은 시간에 너무 많은 요청이 수신되었습니다.",
 };
 
-export const LaundryError = {};
+export const LaundryError = {
+  UserNotFound: "Laundry: 해당 유저를 찾을 수 없습니다.",
+  MachineNotFound: "Laundry: 해당 세탁 기기를 찾을 수 없습니다.",
+  TimeNotFound: "Laundry: 해당 세탁 시간을 찾을 수 없습니다.",
+  ApplyNotFound: "Laundry: 해당 세탁 신청을 찾을 수 없습니다.",
+};
 
 export const LaundryManageError = {
   InvalidGender: "LaundryManage: 올바르지 않은 성별입니다.",

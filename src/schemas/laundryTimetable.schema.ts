@@ -1,13 +1,12 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { type HydratedDocument } from "mongoose";
 
-import { MachineType, MachineTypeValues } from "../common/types";
+import { MachineType } from "../common/types";
 
 @Schema({ timestamps: false, versionKey: false })
 export class LaundryTimetable {
   @Prop({
     required: true,
-    type: MachineTypeValues,
   })
   type: MachineType;
 

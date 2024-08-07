@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
-import { IsBoolean, IsNumber } from "nestjs-swagger-dto";
+import { IsString, IsBoolean, IsNumber } from "class-validator";
 
 export class SearchDTO {
   @ApiProperty()

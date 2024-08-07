@@ -5,10 +5,10 @@ import { DIMIJwtAuthGuard } from "../../auth/guards/auth.guard";
 import { DIMITeacherGuard } from "../../auth/guards/auth.guard.teacher";
 
 import {
-  MachineDTO,
   MachineDeleteDTO,
   LaundryTimeDTO,
   LaundryTimeDeleteDTO,
+  MachineListManageDTO,
 } from "./laundryManage.dto";
 import { LaundryManageService } from "./laundryManage.service";
 
@@ -23,8 +23,8 @@ export class LaundryManageController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    type: [MachineDTO],
     description: "기기 목록",
+    type: [MachineListManageDTO],
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
   @Post("/machine/list")
@@ -43,7 +43,7 @@ export class LaundryManageController {
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
   @Post("/machine/apply")
-  machineApply(@Body() data: MachineDTO) {
+  machineApply(@Body() data: MachineListManageDTO) {
     return this.laundryManageService.machineApply(
       data.gender,
       data.floor,

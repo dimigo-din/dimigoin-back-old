@@ -13,7 +13,7 @@ import {
 } from "../common/types";
 
 @Schema({ timestamps: false, versionKey: false })
-export class LaundryTable {
+export class LaundryMachine {
   @Prop({
     required: true,
     type: String,
@@ -55,5 +55,6 @@ export class LaundryTable {
   allow: number[];
 }
 
-export const LaundryTableSchema = SchemaFactory.createForClass(LaundryTable);
-export type LaundryTableDocument = HydratedDocument<LaundryTable>;
+export const LaundryMachineSchema =
+  SchemaFactory.createForClass(LaundryMachine);
+export type LaundryMachineDocument = HydratedDocument<LaundryMachine>;

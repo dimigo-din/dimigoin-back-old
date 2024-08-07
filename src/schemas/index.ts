@@ -5,4 +5,6 @@ export * from "./password.schema";
 export * from "./musicList.schema";
 export * from "./musicVote.schema";
 export * from "./ratelimit.schema";
-export * from "./laundryTable.schema";
+export * from "./laundryMachine.schema";
+export * from "./laundryApply.schema";
+export * from "./laundryTimetable.schema";

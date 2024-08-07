@@ -9,29 +9,25 @@ import {
 
 import {
   DormitoryFloorType,
-  DormitoryFloorValues,
   DormitoryMachinePosType,
-  DormitoryMachinePosValues,
   Gender,
-  GenderValues,
   MachineType,
-  MachineTypeValues,
 } from "../../common/types";
 
-export class MachineDTO {
-  @ApiProperty({ type: GenderValues })
+export class MachineListManageDTO {
+  @ApiProperty()
   @IsString()
   gender: Gender;
 
-  @ApiProperty({ type: DormitoryFloorValues })
+  @ApiProperty()
   @IsNumber()
   floor: DormitoryFloorType;
 
-  @ApiProperty({ type: DormitoryMachinePosValues })
+  @ApiProperty()
   @IsString()
   pos: DormitoryMachinePosType;
 
-  @ApiProperty({ type: MachineTypeValues })
+  @ApiProperty()
   @IsString()
   machineType: MachineType;
 
@@ -50,7 +46,7 @@ export class MachineDeleteDTO {
 }
 
 export class LaundryTimeDTO {
-  @ApiProperty({ type: MachineTypeValues })
+  @ApiProperty()
   @IsString()
   type: MachineType;
 

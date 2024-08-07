@@ -37,11 +37,11 @@ export class CreateUserDTO {
   @IsString()
   name: string;
 
-  @ApiProperty({ type: GenderValues })
+  @ApiProperty()
   @IsString()
   gender: Gender;
 
-  @ApiProperty({ type: UserTypeValues })
+  @ApiProperty()
   @IsString()
   type: UserType;
 

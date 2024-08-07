@@ -4,21 +4,27 @@ import { MongooseModule } from "@nestjs/mongoose";
 import {
   LaundryMachine,
   LaundryMachineSchema,
+  User,
+  UserSchema,
+  LaundryApply,
+  LaundryApplySchema,
   LaundryTimetable,
   LaundryTimetableSchema,
 } from "../../schemas";
 
-import { LaundryManageController } from "./laundryManage.controller";
-import { LaundryManageService } from "./laundryManage.service";
+import { LaundryController } from "./laundry.controller";
+import { LaundryService } from "./laundry.service";
 
 @Module({
   imports: [
     MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
       { name: LaundryMachine.name, schema: LaundryMachineSchema },
+      { name: LaundryApply.name, schema: LaundryApplySchema },
       { name: LaundryTimetable.name, schema: LaundryTimetableSchema },
     ]),
   ],
-  controllers: [LaundryManageController],
-  providers: [LaundryManageService],
+  controllers: [LaundryController],
+  providers: [LaundryService],
 })
-export class LaundryManageModule {}
+export class LaundryModule {}

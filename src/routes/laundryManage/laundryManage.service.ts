@@ -14,19 +14,20 @@ import {
   MachineType,
   MachineTypeValues,
 } from "../../common/types";
-import { LaundryTable, LaundryTableDocument } from "../../schemas";
 import {
+  LaundryMachine,
+  LaundryMachineDocument,
   LaundryTimetable,
   LaundryTimetableDocument,
-} from "../../schemas/laundryTimetable.schema";
+} from "../../schemas";
 
 import { LaundryTimeDTO } from "./laundryManage.dto";
 
 @Injectable()
 export class LaundryManageService {
   constructor(
-    @InjectModel(LaundryTable.name)
-    private laundryTableModel: Model<LaundryTableDocument>,
+    @InjectModel(LaundryMachine.name)
+    private laundryTableModel: Model<LaundryMachineDocument>,
     @InjectModel(LaundryTimetable.name)
     private laundryTimetableModel: Model<LaundryTimetableDocument>,
   ) {}

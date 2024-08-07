@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Types, type HydratedDocument } from "mongoose";
 
-import { LaundryTable } from "./laundryTable.schema";
+import { LaundryMachine } from "./laundryMachine.schema";
 import { LaundryTimetable } from "./laundryTimetable.schema";
 import { User } from "./user.schema";
 
@@ -10,7 +10,7 @@ export class LaundryApply {
   @Prop({
     required: true,
     type: Types.ObjectId,
-    ref: LaundryTable.name,
+    ref: LaundryMachine.name,
   })
   target: Types.ObjectId;
 
