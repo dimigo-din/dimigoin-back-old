@@ -9,8 +9,6 @@ import * as bcrypt from "bcrypt";
 import { OAuth2Client } from "google-auth-library";
 import * as moment from "moment-timezone";
 
-import { Token, TokenDocument } from "src/schemas/token.schema";
-
 import {
   Login,
   type LoginDocument,
@@ -20,6 +18,8 @@ import {
   type UserDocument,
   UserStudent,
   type UserStudentDocument,
+  Token,
+  type TokenDocument,
 } from "src/schemas";
 
 import { AuthError, ErrorHandler, UserManageError } from "../common/errors";
