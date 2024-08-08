@@ -46,10 +46,11 @@ export class LaundryService {
         .find({})
         .populate(User.name.toLowerCase());
       const times = await this.laundryTimetableModel.find({});
+      const timesAvailable = times.filter((t) => t.available[weekday] === 1);
       return machineAvailable.map((m) => {
         return {
           ...m.toJSON(),
-          times: times
+          times: timesAvailable
             .filter((t) => t.type === m.type)
             .map((t) => {
               const thisApply = applies.find(
@@ -79,6 +80,8 @@ export class LaundryService {
   }
 
   async apply(userId, machineId, timeId) {
+    const weekday = moment().weekday();
+
     try {
       const user = await this.userModel.findById(userId);
       if (!user) throw new Error(LaundryError.UserNotFound);
@@ -88,6 +91,14 @@ export class LaundryService {
 
       const time = await this.laundryTimetableModel.findById(timeId);
       if (!time) throw new Error(LaundryError.TimeNotFound);
+      if (time.available[weekday] === 0)
+        throw new Error(LaundryError.TimeUnavailable);
+
+      const apply = await this.laundryApplyModel.findOne({
+        target: machine._id,
+        time: time._id,
+      });
+      if (!!apply) throw new Error(LaundryError.TimeAlreadyApplied);
 
       await new this.laundryApplyModel({
         target: machine._id,
