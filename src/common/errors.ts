@@ -18,6 +18,8 @@ export const AuthError = {
     "Auth_Google: 구글 토큰에서 payload를 가져올 수 없습니다.",
 };
 
+export const UserError = {};
+
 export const UserManageError = {
   LoginInfoUnavailable: "UserManage_L-DB: 로그인 정보를 불러올 수 없습니다.",
   UserNotFound: "UserManage_U-DB: 사용자 정보를 불러올 수 없습니다.",
@@ -55,6 +57,10 @@ export const LaundryError = {
   MachineNotFound: "Laundry: 해당 세탁 기기를 찾을 수 없습니다.",
   TimeNotFound: "Laundry: 해당 세탁 시간을 찾을 수 없습니다.",
   ApplyNotFound: "Laundry: 해당 세탁 신청을 찾을 수 없습니다.",
+
+  TimeUnavailable: "Laundry: 현 시점에서 사용할 수 없는 시간입니다.",
+  TimeAlreadyApplied:
+    "Laundry: 이미 해당 시간이 다른사람에 의하여 신청되어있습니다.",
 };
 
 export const LaundryManageError = {
@@ -70,6 +76,12 @@ export const LaundryManageError = {
   InvalidWeekdayFormat: "LaundryManage: 올바르지 않은 요일 형식입니다.",
 
   TimeNotFound: "LaundryManage: 존재하지 않는 시간표입니다.",
+};
+
+export const FridayHomeError = {
+  UserNotFound: "FridayHome: 유저를 찾을 수 없습니다.",
+  AlreadyApplied: "FridayHome: 해당 주간에 이미 금요귀가 신청이 있습니다.",
+  NotApplied: "FridayHome: 해당 금요귀가 신청이 존재하지 않습니다.",
 };
 
 /**
