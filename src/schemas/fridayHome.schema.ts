@@ -45,3 +45,4 @@ export class FridayHome {
 
 export const FridayHomeSchema = SchemaFactory.createForClass(FridayHome);
 export type FridayHomeDocument = HydratedDocument<FridayHome>;
+export const FridayHomePopulator = FridayHome.name.toLowerCase();
