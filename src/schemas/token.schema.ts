@@ -21,3 +21,4 @@ export class Token {
 
 export const TokenSchema = SchemaFactory.createForClass(Token);
 export type TokenDocument = HydratedDocument<Token>;
+export const TokenPopulator = Token.name.toLowerCase();
