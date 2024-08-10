@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsString } from "class-validator";
 
-import { Grade, StayAtType } from "../../common/types";
+import { Grade, MealSchedule, StayAtType } from "../../common/types";
 
 export class SeatDTO {
   @ApiProperty()
@@ -45,4 +45,22 @@ export class StayApplyDTO {
   })
   @IsString()
   stayLocationDetail: string;
+}
+
+export class StayGoingOutApplyDTO {
+  @ApiProperty()
+  @IsString()
+  mealCancel: MealSchedule[];
+
+  @ApiProperty()
+  @IsString()
+  from: string;
+
+  @ApiProperty()
+  @IsString()
+  to: string;
+
+  @ApiProperty()
+  @IsString()
+  reason: string;
 }

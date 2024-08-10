@@ -7,10 +7,17 @@ import { ErrorHandler, UserError } from "../../common/errors";
 import {
   LaundryApply,
   LaundryApplyDocument,
+  LaundryMachinePopulator,
+  LaundryTimetablePopulator,
   Login,
   LoginDocument,
   MusicVote,
   MusicVoteDocument,
+  StayApply,
+  StayApplyDocument,
+  StayGoingOut,
+  StayGoingOutDocument,
+  StaySeatPopulator,
   Token,
   TokenDocument,
   User,
@@ -34,6 +41,10 @@ export class UserService {
     private musicVoteModel: Model<MusicVoteDocument>,
     @InjectModel(LaundryApply.name)
     private laundryApplyModel: Model<LaundryApplyDocument>,
+    @InjectModel(StayApply.name)
+    private stayApplyModel: Model<StayApplyDocument>,
+    @InjectModel(StayGoingOut.name)
+    private stayGoingOutModel: Model<StayGoingOutDocument>,
   ) {}
 
   async getLoginMethods(userId) {
@@ -49,26 +60,66 @@ export class UserService {
         UserError,
         error,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        "기상송 등록에 실패하였습니다.",
+        "로그인 방식 목록을 불러오는데 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
-  async getAliveSessions(userId) {
+  async getMyLaundry(userId: string) {
     try {
-      const logins = await this.loginModel.find({ user: userId });
+      const apply = await this.laundryApplyModel
+        .findOne({ user: userId })
+        .populate(LaundryMachinePopulator)
+        .populate(LaundryTimetablePopulator);
+      if (!apply) return null;
 
-      return logins.map((l) => {
-        return l.type;
-      });
+      return {
+        _id: apply._id,
+        machineId: apply[LaundryMachinePopulator]._id,
+        timeId: apply[LaundryTimetablePopulator]._id,
+        machine: apply[LaundryMachinePopulator].name,
+        time: apply[LaundryTimetablePopulator].time,
+        type: apply[LaundryMachinePopulator].type,
+      };
     } catch (error) {
       console.log(error);
       ErrorHandler(
         UserError,
         error,
         HttpStatus.INTERNAL_SERVER_ERROR,
-        "기상송 등록에 실패하였습니다.",
+        "세탁 현황을 불러오는데 실패하였습니다.",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async getMyStay(userId: string) {
+    try {
+      const apply = await this.stayApplyModel
+        .findOne({ user: userId })
+        .populate(StaySeatPopulator);
+      if (!apply) return null;
+
+      const goingOut = await this.stayGoingOutModel.findOne({
+        stay: apply._id,
+      });
+
+      return {
+        _id: apply._id,
+        seat: apply[StaySeatPopulator].seat,
+        isGoingOut: !!goingOut,
+        ...(!!goingOut
+          ? { from: goingOut.from, to: goingOut.to, reason: goingOut.reason }
+          : {}),
+      };
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(
+        UserError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "잔류 현황을 불러오는데 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

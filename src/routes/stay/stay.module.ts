@@ -10,6 +10,8 @@ import {
   StayApplySchema,
   StaySeat,
   StaySeatSchema,
+  StayGoingOut,
+  StayGoingOutSchema,
 } from "../../schemas";
 
 import { StayController } from "./stay.controller";
@@ -22,6 +24,7 @@ import { StayService } from "./stay.service";
       { name: StayApply.name, schema: StayApplySchema },
       { name: StaySchedule.name, schema: StayScheduleSchema },
       { name: StaySeat.name, schema: StaySeatSchema },
+      { name: StayGoingOut.name, schema: StayGoingOutSchema },
     ]),
   ],
   controllers: [StayController],

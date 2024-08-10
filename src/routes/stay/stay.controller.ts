@@ -11,7 +11,7 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { DIMIJwtAuthGuard } from "../../auth/guards/auth.guard";
 import { DIMIStudentGuard } from "../../auth/guards/auth.guard.student";
 
-import { SeatListDTO, StayApplyDTO } from "./stay.dto";
+import { SeatListDTO, StayApplyDTO, StayGoingOutApplyDTO } from "./stay.dto";
 import { StayService } from "./stay.service";
 
 @ApiTags("Stay")
@@ -31,7 +31,7 @@ export class StayController {
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
   @Post("/list")
   list(@Request() req) {
-    return this.stayService.list(req.user);
+    return this.stayService.list(req.user._id);
   }
 
   @ApiOperation({
@@ -52,5 +52,56 @@ export class StayController {
       return this.stayService.applyClass(req.user._id);
     else if (data.stayLocation === "others")
       return this.stayService.applyOther(req.user._id, data.stayLocationDetail);
+  }
+
+  @ApiOperation({
+    summary: "잔류 신청 취소",
+    description: "잔류 신청을 취소합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: "성공 여부",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
+  @Post("/apply")
+  cancel(@Request() req) {
+    return this.stayService.cancelStay(req.user._id);
+  }
+
+  @ApiOperation({
+    summary: "잔류중 외출 신청",
+    description: "잔류중 외출을 신청합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: "성공 여부",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
+  @Post("/apply/goingOut")
+  applyGoingOut(@Request() req, @Body() data: StayGoingOutApplyDTO) {
+    return this.stayService.goingOutApply(
+      req.user._id,
+      data.mealCancel,
+      data.from,
+      data.to,
+      data.reason,
+    );
+  }
+
+  @ApiOperation({
+    summary: "잔류중 외출 신청 취소",
+    description: "잔류중 외출 신청을 취소합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: "성공 여부",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
+  @Post("/apply/goingOut")
+  cancelGoingOut(@Request() req) {
+    return this.stayService.goingOutDelete(req.user._id);
   }
 }

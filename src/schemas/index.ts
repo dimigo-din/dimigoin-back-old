@@ -12,3 +12,4 @@ export * from "./laundryTimetable.schema";
 export * from "./stayApply.schema";
 export * from "./staySchedule.schema";
 export * from "./staySeat.schema";
+export * from "./stayGoingOut.schema";

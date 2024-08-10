@@ -40,3 +40,6 @@ export type Weekday = (typeof WeekdayValues)[number];
 
 export const StayTypeValues = ["studyroom", "class", "others"] as const;
 export type StayAtType = (typeof StayTypeValues)[number];
+
+export const MealScheduleValues = ["breakfast", "launch", "dinner"] as const;
+export type MealSchedule = (typeof MealScheduleValues)[number];

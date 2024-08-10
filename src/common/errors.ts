@@ -88,6 +88,7 @@ export const StayError = {
   UserNotFound: "Stay: 해당 유저를 찾을 수 없습니다.",
   SeatNotFound: "Stay: 해당 좌석을 찾을 수 없습니다.",
   ApplyNotFound: "Stay: 해당 신청을 찾을 수 없습니다.",
+  GoingOutApplyNotFound: "Stay: 해당 외출 신청을 찾을 수 없습니다.",
   YouAlreadyApplied: "Stay: 이미 잔류신청이 되어있습니다.",
   SeatAlreadyApplied: "Stay: 이미 해당 좌석이 예약되었습니다.",
 
