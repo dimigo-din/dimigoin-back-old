@@ -1,6 +1,6 @@
 import type { Model } from "mongoose";
 
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import * as moment from "moment-timezone";
 
@@ -48,8 +48,10 @@ export class MusicManageService {
       return true;
     } catch (error) {
       console.log(error);
-      ErrorHandler(MusicManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        MusicManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "기상송 등록에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -62,7 +64,7 @@ export class MusicManageService {
 
     try {
       const isApplied = await this.musicListModel.findOne({ week, videoId });
-      if (!isApplied) this.applyMusic(user, videoId);
+      if (!isApplied) await this.applyMusic(user, videoId);
 
       await this.musicListModel.findOneAndUpdate(
         { week, videoId },
@@ -76,8 +78,10 @@ export class MusicManageService {
       return true;
     } catch (error) {
       console.log(error);
-      ErrorHandler(MusicManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        MusicManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "기상송 확정에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -95,8 +99,10 @@ export class MusicManageService {
       target.deleteOne();
     } catch (error) {
       console.log(error);
-      ErrorHandler(MusicManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        MusicManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "기상송 삭제에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );

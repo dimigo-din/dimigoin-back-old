@@ -1,13 +1,13 @@
 import type { Model } from "mongoose";
 
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import * as moment from "moment-timezone";
 
 import { ErrorHandler, LaundryManageError } from "../../common/errors";
 import {
-  DormitoryFloorType,
-  DormitoryMachinePosType,
+  DormitoryFloor,
+  DormitoryMachinePos,
   DormitoryMachinePosValues,
   Gender,
   GenderValues,
@@ -37,8 +37,10 @@ export class LaundryManageService {
       return await this.laundryTableModel.find({});
     } catch (error) {
       console.log(error);
-      ErrorHandler(LaundryManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        LaundryManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "기기 목록을 불러오는데 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -47,8 +49,8 @@ export class LaundryManageService {
 
   async machineApply(
     gender: Gender,
-    floor: DormitoryFloorType,
-    pos: DormitoryMachinePosType,
+    floor: DormitoryFloor,
+    pos: DormitoryMachinePos,
     machineType: MachineType,
     allow: number[],
   ) {
@@ -80,8 +82,10 @@ export class LaundryManageService {
       return true;
     } catch (error) {
       console.log(error);
-      ErrorHandler(LaundryManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        LaundryManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "기기 등록에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -97,8 +101,10 @@ export class LaundryManageService {
       return true;
     } catch (error) {
       console.log(error);
-      ErrorHandler(LaundryManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        LaundryManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "기기 삭제에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -110,8 +116,10 @@ export class LaundryManageService {
       return await this.laundryTimetableModel.find({});
     } catch (error) {
       console.log(error);
-      ErrorHandler(LaundryManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        LaundryManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "세탁 스케줄 목록을 불러오는데 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -138,8 +146,10 @@ export class LaundryManageService {
       return true;
     } catch (error) {
       console.log(error);
-      ErrorHandler(LaundryManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        LaundryManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "세탁 스케줄 등록에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -155,8 +165,10 @@ export class LaundryManageService {
       return true;
     } catch (error) {
       console.log(error);
-      ErrorHandler(LaundryManageError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        LaundryManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "스케줄 삭제에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );

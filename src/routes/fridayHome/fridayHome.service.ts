@@ -1,12 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
-import {
-  ErrorHandler,
-  FridayHomeError,
-  LaundryError,
-} from "../../common/errors";
+import { ErrorHandler, FridayHomeError } from "../../common/errors";
 import { User, UserDocument } from "../../schemas";
 import {
   FridayHome,
@@ -34,8 +30,10 @@ export class FridayHomeService {
       return applies.map((a) => a.toJSON());
     } catch (error) {
       console.log(error);
-      ErrorHandler(FridayHomeError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        FridayHomeError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "금요귀가 신청 기록을 불러오는데 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -64,8 +62,10 @@ export class FridayHomeService {
       }).save();
     } catch (error) {
       console.log(error);
-      ErrorHandler(FridayHomeError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        FridayHomeError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "금요귀가 신청에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -88,8 +88,10 @@ export class FridayHomeService {
       return true;
     } catch (error) {
       console.log(error);
-      ErrorHandler(FridayHomeError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        FridayHomeError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "금요귀가 신청 취소에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );

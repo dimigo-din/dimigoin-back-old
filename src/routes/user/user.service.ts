@@ -1,6 +1,6 @@
 import type { Model } from "mongoose";
 
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 
 import { ErrorHandler, UserError } from "../../common/errors";
@@ -45,8 +45,10 @@ export class UserService {
       });
     } catch (error) {
       console.log(error);
-      ErrorHandler(UserError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        UserError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "기상송 등록에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -62,8 +64,10 @@ export class UserService {
       });
     } catch (error) {
       console.log(error);
-      ErrorHandler(UserError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        UserError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "기상송 등록에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );

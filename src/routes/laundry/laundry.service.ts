@@ -1,6 +1,6 @@
 import type { Model } from "mongoose";
 
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import * as moment from "moment-timezone";
 
@@ -14,6 +14,7 @@ import {
   LaundryApplyDocument,
   LaundryTimetable,
   LaundryTimetableDocument,
+  UserPopulator,
 } from "../../schemas";
 
 @Injectable()
@@ -44,7 +45,7 @@ export class LaundryService {
 
       const applies = await this.laundryApplyModel
         .find({})
-        .populate(User.name.toLowerCase());
+        .populate(UserPopulator);
       const times = await this.laundryTimetableModel.find({});
       const timesAvailable = times.filter((t) => t.available[weekday] === 1);
       return machineAvailable.map((m) => {
@@ -56,14 +57,13 @@ export class LaundryService {
               const thisApply = applies.find(
                 (a) => a.target.equals(m._id) && a.time.equals(t._id),
               );
-              const uSchema = User.name.toLowerCase();
               return !!thisApply
                 ? {
                     ...t.toJSON(),
                     isApplied: true,
-                    isMine: thisApply[uSchema]._id.equals(user._id),
-                    applierId: thisApply[uSchema]._id,
-                    applierName: thisApply[uSchema].name,
+                    isMine: thisApply[UserPopulator]._id.equals(user._id),
+                    applierId: thisApply[UserPopulator]._id,
+                    applierName: thisApply[UserPopulator].name,
                   }
                 : { ...t.toJSON(), isApplied: false };
             }),
@@ -71,8 +71,10 @@ export class LaundryService {
       });
     } catch (error) {
       console.log(error);
-      ErrorHandler(LaundryError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        LaundryError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "기기 리스트를 불러오는데 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -109,8 +111,10 @@ export class LaundryService {
       return true;
     } catch (error) {
       console.log(error);
-      ErrorHandler(LaundryError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        LaundryError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "세탁 신청에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -133,8 +137,10 @@ export class LaundryService {
       return true;
     } catch (error) {
       console.log(error);
-      ErrorHandler(LaundryError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        LaundryError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "세탁 신청 취소에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );

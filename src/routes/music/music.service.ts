@@ -1,6 +1,6 @@
 import type { Model } from "mongoose";
 
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { InjectModel } from "@nestjs/mongoose";
 import * as moment from "moment-timezone";
@@ -101,8 +101,10 @@ export class MusicService {
       );
     } catch (error) {
       console.log(error);
-      ErrorHandler(MusicError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        MusicError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "음악 검색에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -138,8 +140,10 @@ export class MusicService {
     } catch (error) {
       console.log(error);
       ErrorHandler(MusicError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      ErrorHandler(RateLimitError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        RateLimitError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "음악 검색에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -171,8 +175,10 @@ export class MusicService {
       return true;
     } catch (error) {
       console.log(error);
-      ErrorHandler(MusicError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        MusicError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "기상송 등록에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
@@ -212,8 +218,10 @@ export class MusicService {
       return true;
     } catch (error) {
       console.log(error);
-      ErrorHandler(MusicError, error, HttpStatus.INTERNAL_SERVER_ERROR);
-      throw new HttpException(
+      ErrorHandler(
+        MusicError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
         "기상송 투표에 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );

@@ -89,8 +89,10 @@ export class AuthService {
       } else throw new Error(AuthError.ForbiddenUserType);
     } catch (error) {
       console.log(error);
-      ErrorHandler(AuthError, error, HttpStatus.UNAUTHORIZED);
-      throw new HttpException(
+      ErrorHandler(
+        AuthError,
+        error,
+        HttpStatus.UNAUTHORIZED,
         "비밀번호 인증에 실패하였습니다.",
         HttpStatus.UNAUTHORIZED,
       );
@@ -139,8 +141,10 @@ export class AuthService {
       } else throw new Error(AuthError.ForbiddenUserType);
     } catch (error) {
       console.log(error);
-      ErrorHandler(AuthError, error, HttpStatus.UNAUTHORIZED);
-      throw new HttpException(
+      ErrorHandler(
+        AuthError,
+        error,
+        HttpStatus.UNAUTHORIZED,
         "인증되지 않은 토큰입니다.",
         HttpStatus.UNAUTHORIZED,
       );
@@ -170,18 +174,19 @@ export class AuthService {
       } else throw new Error(AuthError.ForbiddenUserType);
     } catch (error) {
       console.log(error);
-      ErrorHandler(AuthError, error, HttpStatus.UNAUTHORIZED);
       if (error.name == "TokenExpiredError") {
         throw new HttpException(
           "토큰이 만료되었습니다.",
           HttpStatus.UNAUTHORIZED,
         );
-      } else {
-        throw new HttpException(
-          "인증되지 않은 토큰입니다.",
-          HttpStatus.UNAUTHORIZED,
-        );
       }
+      ErrorHandler(
+        AuthError,
+        error,
+        HttpStatus.UNAUTHORIZED,
+        "인증되지 않은 토큰입니다.",
+        HttpStatus.UNAUTHORIZED,
+      );
     }
   }
 
