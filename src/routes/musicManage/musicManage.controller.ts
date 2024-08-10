@@ -24,7 +24,7 @@ export class MusicManageController {
     description: "당일 나올 기상송을 확정짓습니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "성공 여부",
     type: Boolean,
   })
@@ -39,7 +39,7 @@ export class MusicManageController {
     description: "신청된 기상송을 삭제합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "성공 여부",
     type: Boolean,
   })

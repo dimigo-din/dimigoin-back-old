@@ -30,7 +30,7 @@ export class UserManageController {
     description: "계정에 연결된 로그인 목록을 불러옵니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
   })
   @UseGuards(DIMIJwtAuthGuard)
   @Post("/login")
@@ -43,7 +43,7 @@ export class UserManageController {
     description: "유저에 비밀번호를 이용한 로그인 정보를 연결합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "로그인 연결 성공",
     type: Boolean,
   })
@@ -59,7 +59,7 @@ export class UserManageController {
     description: "유저에 디미고 구글 계정을 이용한 로그인 정보를 연결합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "로그인 연결 성공",
     type: Boolean,
   })
@@ -75,7 +75,7 @@ export class UserManageController {
     description: "DB에 유저를 생성합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "유저 생성 성공",
     type: Boolean,
   })
@@ -91,7 +91,7 @@ export class UserManageController {
     description: "DB에 유저를 생성합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "유저 생성 성공",
     type: Boolean,
   })

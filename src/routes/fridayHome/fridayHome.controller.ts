@@ -28,7 +28,7 @@ export class FridayHomeController {
     description: "본인의 금요귀가 신청 목록을 불러옵니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "금요귀가 신청 목록",
     type: [FridayHomeListDTO],
   })
@@ -43,7 +43,7 @@ export class FridayHomeController {
     description: "금요귀가를 신청합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "성공 여부",
     type: Boolean,
   })
@@ -63,7 +63,7 @@ export class FridayHomeController {
     description: "본인의 금요귀가 신청을 취소합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "성공 여부",
     type: Boolean,
   })

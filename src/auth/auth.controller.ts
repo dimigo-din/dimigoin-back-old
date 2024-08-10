@@ -26,7 +26,7 @@ export class AuthController {
     description: "분리된 패스워드 로그인 시스템입니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "로그인 성공",
     type: TokensResponse,
   })
@@ -40,7 +40,7 @@ export class AuthController {
     description: "앱의 구글 로그인을 처리합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "로그인 성공",
     type: TokensResponse,
   })
@@ -54,7 +54,7 @@ export class AuthController {
     description: "Refresh Token을 사용하여 Access Token을 재발급합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "갱신 성공",
     type: TokensResponse,
   })

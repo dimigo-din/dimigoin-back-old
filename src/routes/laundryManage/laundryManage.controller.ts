@@ -22,7 +22,7 @@ export class LaundryManageController {
     description: "등록된 기기의 목록을 반환합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "기기 목록",
     type: [MachineListManageDTO],
   })
@@ -37,7 +37,7 @@ export class LaundryManageController {
     description: "세탁 기기를 등록합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     type: Boolean,
     description: "성공 여부",
   })
@@ -58,7 +58,7 @@ export class LaundryManageController {
     description: "등록된 세탁 기기를 삭제합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     type: Boolean,
     description: "성공 여부",
   })
@@ -73,7 +73,7 @@ export class LaundryManageController {
     description: "등록된 세탁 시간 목록을 불러옵니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     type: [LaundryTimeDTO],
     description: "시간표 목록",
   })
@@ -88,7 +88,7 @@ export class LaundryManageController {
     description: "세탁 시간표를 등록합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     type: Boolean,
     description: "성공 여부",
   })
@@ -103,7 +103,7 @@ export class LaundryManageController {
     description: "등록된 세탁 시간를 삭제합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     type: Boolean,
     description: "성공 여부",
   })

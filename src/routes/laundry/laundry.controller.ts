@@ -24,7 +24,7 @@ export class LaundryController {
     description: "세탁 기기목록을 불러옵니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "기기 리스트",
     type: [MachineListDTO],
   })
@@ -39,7 +39,7 @@ export class LaundryController {
     description: "세탁을 신청합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "성공 여부",
     type: Boolean,
   })
@@ -54,7 +54,7 @@ export class LaundryController {
     description: "신청한 세탁을 취소합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "성공 여부",
     type: Boolean,
   })

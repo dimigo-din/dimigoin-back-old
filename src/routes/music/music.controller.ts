@@ -29,7 +29,7 @@ export class MusicController {
     description: "등록된 기상송을 확인합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "기상송 목록",
     type: [YouTubeSearchResultsDTO],
   })
@@ -44,7 +44,7 @@ export class MusicController {
     description: "기상곡에 등록할 음악을 검색합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "음악 목록",
     type: [YouTubeSearchResultsDTO],
   })
@@ -59,7 +59,7 @@ export class MusicController {
     description: "유튜브 비디오 아이디를 바탕으로 기상송을 등록합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "성공 여부",
     type: Boolean,
   })
@@ -75,7 +75,7 @@ export class MusicController {
       "등록되어있는 기상송을 투표합니다. 만약 등록이 안되어있다면, 등록도 같이 진행합니다.",
   })
   @ApiResponse({
-    status: HttpStatus.OK,
+    status: HttpStatus.CREATED,
     description: "성공 여부",
     type: Boolean,
   })
