@@ -84,13 +84,35 @@ export const FridayHomeError = {
   NotApplied: "FridayHome: 해당 금요귀가 신청이 존재하지 않습니다.",
 };
 
-/**
+export const StayError = {
+  UserNotFound: "Stay: 해당 유저를 찾을 수 없습니다.",
+  SeatNotFound: "Stay: 해당 좌석을 찾을 수 없습니다.",
+  ApplyNotFound: "Stay: 해당 신청을 찾을 수 없습니다.",
+  YouAlreadyApplied: "Stay: 이미 잔류신청이 되어있습니다.",
+  SeatAlreadyApplied: "Stay: 이미 해당 좌석이 예약되었습니다.",
+
+  DisAllowedGrade: "Stay: 해당 학년에는 허용되지 않은 좌석입니다.",
+};
+
+export const StayManageError = {};
+
+/** 이게 모든 catch에 들어가면 번거롭고 안이뻐서 이럼. 이러니까 이쁘지?!
  *  @param { Object } base - Error bases
  *  @param { Error } error - Error message
  *  @param { HttpStatus } type - Http response code
+ *  @param { string } finalMsg - Error if not filtered
+ *  @param { HttpStatus } finalStatus - Error if not filtered
  */
-export const ErrorHandler = (base: object, error: Error, type: HttpStatus) => {
+export const ErrorHandler = (
+  base: object,
+  error: Error,
+  type: HttpStatus,
+  finalMsg?: string,
+  finalStatus?: HttpStatus,
+) => {
   if (Object.values(base).includes(error.message)) {
     throw new HttpException(error.message, type);
   }
+  if (!!finalMsg && !!finalStatus)
+    throw new HttpException(finalMsg, finalStatus);
 };

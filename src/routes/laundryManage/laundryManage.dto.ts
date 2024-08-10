@@ -8,8 +8,8 @@ import {
 } from "class-validator";
 
 import {
-  DormitoryFloorType,
-  DormitoryMachinePosType,
+  DormitoryFloor,
+  DormitoryMachinePos,
   Gender,
   MachineType,
 } from "../../common/types";
@@ -21,11 +21,11 @@ export class MachineListManageDTO {
 
   @ApiProperty()
   @IsNumber()
-  floor: DormitoryFloorType;
+  floor: DormitoryFloor;
 
   @ApiProperty()
   @IsString()
-  pos: DormitoryMachinePosType;
+  pos: DormitoryMachinePos;
 
   @ApiProperty()
   @IsString()

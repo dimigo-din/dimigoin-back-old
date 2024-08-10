@@ -4,7 +4,6 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 import {
   Grade,
-  GradeValues,
   StayScheduleApplyDayUnit,
   StayScheduleApplyDayUnitValues,
   StayAtType,
@@ -26,10 +25,9 @@ export class StaySchedule {
 
   @Prop({
     required: true,
-    type: Number,
-    enum: GradeValues,
+    type: [Number],
   })
-  grade: Grade;
+  grade: Grade[];
 
   @Prop({
     required: true,

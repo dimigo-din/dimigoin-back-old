@@ -9,3 +9,6 @@ export * from "./ratelimit.schema";
 export * from "./laundryMachine.schema";
 export * from "./laundryApply.schema";
 export * from "./laundryTimetable.schema";
+export * from "./stayApply.schema";
+export * from "./staySchedule.schema";
+export * from "./staySeat.schema";

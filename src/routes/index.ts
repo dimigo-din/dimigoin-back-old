@@ -5,3 +5,4 @@ export * from "./musicManage";
 export * from "./laundry";
 export * from "./laundryManage";
 export * from "./fridayHome";
+export * from "./stay";
