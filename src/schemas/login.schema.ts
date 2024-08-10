@@ -30,3 +30,4 @@ export class Login {
 
 export const LoginSchema = SchemaFactory.createForClass(Login);
 export type LoginDocument = HydratedDocument<Login>;
+export const LoginPopulator = Login.name.toLowerCase();

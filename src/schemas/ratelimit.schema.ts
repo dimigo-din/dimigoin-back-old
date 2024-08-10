@@ -30,3 +30,4 @@ export class RateLimit {
 
 export const RateLimitSchema = SchemaFactory.createForClass(RateLimit);
 export type RateLimitDocument = HydratedDocument<RateLimit>;
+export const RateLimitPopulator = RateLimit.name.toLowerCase();

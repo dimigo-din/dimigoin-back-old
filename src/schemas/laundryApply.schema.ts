@@ -31,3 +31,4 @@ export class LaundryApply {
 
 export const LaundryApplySchema = SchemaFactory.createForClass(LaundryApply);
 export type LaundryApplyDocument = HydratedDocument<LaundryApply>;
+export const LaundryApplyPopulator = LaundryApply.name.toLowerCase();

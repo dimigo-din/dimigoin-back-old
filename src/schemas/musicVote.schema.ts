@@ -40,3 +40,4 @@ export class MusicVote {
 
 export const MusicVoteSchema = SchemaFactory.createForClass(MusicVote);
 export type MusicVoteDocument = HydratedDocument<MusicVote>;
+export const MusicVotePopulator = MusicVote.name.toLowerCase();

@@ -5,7 +5,7 @@ import { Types, type HydratedDocument } from "mongoose";
 
 import { ClassValues, GradeValues } from "src/common/types";
 
-import { User } from "./user.schema";
+import { User } from "./";
 
 @Schema({ timestamps: false, versionKey: false })
 export class UserStudent {
@@ -47,3 +47,4 @@ export class UserStudent {
 
 export const UserStudentSchema = SchemaFactory.createForClass(UserStudent);
 export type UserStudentDocument = HydratedDocument<UserStudent>;
+export const UserStudentPopulator = UserStudent.name.toLowerCase();

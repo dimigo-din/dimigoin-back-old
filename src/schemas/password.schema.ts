@@ -28,3 +28,4 @@ export class Password {
 
 export const PasswordSchema = SchemaFactory.createForClass(Password);
 export type PasswordDocument = HydratedDocument<Password>;
+export const PasswordPopulator = Password.name.toLowerCase();

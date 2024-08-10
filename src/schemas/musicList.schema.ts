@@ -39,3 +39,4 @@ export class MusicList {
 
 export const MusicListSchema = SchemaFactory.createForClass(MusicList);
 export type MusicListDocument = HydratedDocument<MusicList>;
+export const MusicListPopulator = MusicList.name.toLowerCase();

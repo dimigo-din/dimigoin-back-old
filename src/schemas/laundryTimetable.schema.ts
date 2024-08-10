@@ -26,3 +26,4 @@ export class LaundryTimetable {
 export const LaundryTimetableSchema =
   SchemaFactory.createForClass(LaundryTimetable);
 export type LaundryTimetableDocument = HydratedDocument<LaundryTimetable>;
+export const LaundryTimetablePopulator = LaundryTimetable.name.toLowerCase();

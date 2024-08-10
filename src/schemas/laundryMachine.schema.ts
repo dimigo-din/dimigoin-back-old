@@ -3,9 +3,9 @@ import type { HydratedDocument } from "mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 import {
-  DormitoryFloorType,
+  DormitoryFloor,
   DormitoryFloorValues,
-  DormitoryMachinePosType,
+  DormitoryMachinePos,
   DormitoryMachinePosValues,
   Gender,
   GenderValues,
@@ -39,14 +39,14 @@ export class LaundryMachine {
     type: Number,
     enum: DormitoryFloorValues,
   })
-  floor: DormitoryFloorType;
+  floor: DormitoryFloor;
 
   @Prop({
     required: true,
     type: String,
     enum: DormitoryMachinePosValues,
   })
-  pos: DormitoryMachinePosType;
+  pos: DormitoryMachinePos;
 
   @Prop({
     required: true,
@@ -58,3 +58,4 @@ export class LaundryMachine {
 export const LaundryMachineSchema =
   SchemaFactory.createForClass(LaundryMachine);
 export type LaundryMachineDocument = HydratedDocument<LaundryMachine>;
+export const LaundryMachinePopulator = LaundryMachine.name.toLowerCase();
