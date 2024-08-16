@@ -12,6 +12,7 @@ import {
   DormitoryMachinePos,
   Gender,
   MachineType,
+  MachineTypeValues,
 } from "../../common/types";
 
 export class MachineListManageDTO {
@@ -66,4 +67,55 @@ export class LaundryTimeDeleteDTO {
   @ApiProperty()
   @IsString()
   id: string;
+}
+
+export class LaundryApplyStatus_machine {
+  @ApiProperty()
+  @IsString()
+  _id: string;
+
+  @ApiProperty()
+  @IsString()
+  name: string;
+
+  @ApiProperty({ enum: MachineTypeValues })
+  @IsString()
+  type: MachineType;
+}
+export class LaundryApplyStatus_time {
+  @ApiProperty()
+  @IsString()
+  _id: string;
+
+  @ApiProperty()
+  @IsString()
+  time: string;
+}
+export class LaundryApplyStatus_user {
+  @ApiProperty()
+  @IsString()
+  _id: string;
+
+  @ApiProperty()
+  @IsString()
+  name: string;
+
+  @ApiProperty()
+  @IsNumber()
+  grade: number;
+
+  @ApiProperty()
+  @IsNumber()
+  class: number;
+}
+
+export class LaundryApplyStatus {
+  @ApiProperty({ type: LaundryApplyStatus_machine })
+  machine: LaundryApplyStatus_machine;
+
+  @ApiProperty({ type: LaundryApplyStatus_time })
+  time: LaundryApplyStatus_time;
+
+  @ApiProperty({ type: LaundryApplyStatus_user })
+  user: LaundryApplyStatus_user;
 }

@@ -1,4 +1,11 @@
-import { Body, Controller, HttpStatus, Post, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Post,
+  Request,
+  UseGuards,
+} from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard } from "../../auth/guards/auth.guard";
@@ -9,6 +16,7 @@ import {
   LaundryTimeDTO,
   LaundryTimeDeleteDTO,
   MachineListManageDTO,
+  LaundryApplyStatus,
 } from "./laundryManage.dto";
 import { LaundryManageService } from "./laundryManage.service";
 
@@ -16,6 +24,21 @@ import { LaundryManageService } from "./laundryManage.service";
 @Controller("/manage/laundry")
 export class LaundryManageController {
   constructor(private readonly laundryManageService: LaundryManageService) {}
+
+  @ApiOperation({
+    summary: "세탁신청 목록",
+    description: "세탁신청 목록을 반환합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: "세탁신청 목록",
+    type: [LaundryApplyStatus],
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @Post("/apply/list")
+  applyList(@Request() req) {
+    return this.laundryManageService.applyStatus(req.user._id);
+  }
 
   @ApiOperation({
     summary: "기기 목록",

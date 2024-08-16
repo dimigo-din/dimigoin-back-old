@@ -15,10 +15,19 @@ import {
   MachineTypeValues,
 } from "../../common/types";
 import {
+  LaundryApply,
+  LaundryApplyDocument,
   LaundryMachine,
   LaundryMachineDocument,
+  LaundryMachinePopulator,
   LaundryTimetable,
   LaundryTimetableDocument,
+  LaundryTimetablePopulator,
+  User,
+  UserDocument,
+  UserPopulator,
+  UserStudent,
+  UserStudentDocument,
 } from "../../schemas";
 
 import { LaundryTimeDTO } from "./laundryManage.dto";
@@ -26,11 +35,65 @@ import { LaundryTimeDTO } from "./laundryManage.dto";
 @Injectable()
 export class LaundryManageService {
   constructor(
+    @InjectModel(User.name)
+    private userModel: Model<UserDocument>,
+    @InjectModel(UserStudent.name)
+    private userStudentModel: Model<UserStudentDocument>,
     @InjectModel(LaundryMachine.name)
     private laundryTableModel: Model<LaundryMachineDocument>,
     @InjectModel(LaundryTimetable.name)
     private laundryTimetableModel: Model<LaundryTimetableDocument>,
+    @InjectModel(LaundryApply.name)
+    private readonly laundryApplyModel: Model<LaundryApplyDocument>,
   ) {}
+
+  async applyStatus(userId) {
+    try {
+      const user = await this.userModel.findById(userId);
+      if (!user) throw new Error(LaundryManageError.UserNotFound);
+
+      const applies = await this.laundryApplyModel
+        .find({})
+        .populate(LaundryMachinePopulator)
+        .populate(LaundryTimetablePopulator)
+        .populate(UserPopulator);
+
+      return Promise.all(
+        applies
+          .filter((a) => a[UserPopulator].gender === user.gender)
+          .map(async (a) => {
+            const userStudent = await this.userStudentModel.findOne({
+              user: a[UserPopulator]._id,
+            });
+            return {
+              machine: {
+                _id: a[LaundryMachinePopulator]._id,
+                name: a[LaundryMachinePopulator].name,
+                type: a[LaundryMachinePopulator].type,
+              },
+              time: {
+                _id: a[LaundryTimetablePopulator]._id,
+                time: a[LaundryTimetablePopulator].time,
+              },
+              user: {
+                _id: a[UserPopulator]._id,
+                name: a[UserPopulator].name,
+                grade: !!userStudent ? userStudent.grade : "",
+                class: !!userStudent ? userStudent.class : "",
+              },
+            };
+          }),
+      );
+    } catch (error) {
+      ErrorHandler(
+        LaundryManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "세탁현황을 불러오는데 실패하였습니다.",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 
   async machineList() {
     try {
