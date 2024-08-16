@@ -84,7 +84,7 @@ export class GoingOutCancelDTO {
 export class CurrentStaySchedule {
   @ApiProperty()
   @IsString()
-  nane: string;
+  name: string;
 
   @ApiProperty()
   @IsString()
