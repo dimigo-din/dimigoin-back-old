@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
   HttpStatus,
   Post,
   Request,
@@ -34,7 +36,7 @@ export class StayController {
     type: [SeatListDTO],
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/list")
+  @Get()
   list(@Request() req) {
     return this.stayService.list(req.user._id);
   }
@@ -49,7 +51,7 @@ export class StayController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/apply")
+  @Post()
   async apply(@Request() req, @Body() data: StayApplyDTO) {
     await this.stayService.checkSchedule(req.user._id, data.stayLocation);
     if (data.stayLocation === "studyroom")
@@ -70,9 +72,24 @@ export class StayController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/cancel")
+  @Delete()
   cancel(@Request() req) {
     return this.stayService.cancelStay(req.user._id);
+  }
+
+  @ApiOperation({
+    summary: "외출신청 목록",
+    description: "외출신청 목록을 확인합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: "외출신청 목록",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
+  @Post("/goingOut")
+  goingOutList(@Request() req) {
+    return this.stayService.goingOutList(req.user._id);
   }
 
   @ApiOperation({
@@ -85,7 +102,7 @@ export class StayController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/apply/goingOut")
+  @Post("/goingOut")
   applyGoingOut(@Request() req, @Body() data: StayGoingOutApplyDTO) {
     console.log(data);
     return this.stayService.goingOutApply(
@@ -108,7 +125,7 @@ export class StayController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/cancel/goingOut")
+  @Delete("/goingOut")
   cancelGoingOut(@Request() req, @Body() data: GoingOutCancelDTO) {
     return this.stayService.goingOutDelete(req.user._id, data.goingOutId);
   }

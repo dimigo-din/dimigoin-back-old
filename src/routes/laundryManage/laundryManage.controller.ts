@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
   HttpStatus,
   Post,
   Request,
@@ -35,7 +37,7 @@ export class LaundryManageController {
     type: [LaundryApplyStatus],
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
-  @Post("/apply/list")
+  @Get("/apply")
   applyList(@Request() req) {
     return this.laundryManageService.applyStatus(req.user._id);
   }
@@ -50,7 +52,7 @@ export class LaundryManageController {
     type: [MachineListManageDTO],
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
-  @Post("/machine/list")
+  @Get("/machine")
   machineList() {
     return this.laundryManageService.machineList();
   }
@@ -65,7 +67,7 @@ export class LaundryManageController {
     description: "성공 여부",
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
-  @Post("/machine/apply")
+  @Post("/machine")
   machineApply(@Body() data: MachineListManageDTO) {
     return this.laundryManageService.machineApply(
       data.gender,
@@ -86,7 +88,7 @@ export class LaundryManageController {
     description: "성공 여부",
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
-  @Post("/machine/delete")
+  @Delete("/machine")
   machineDelete(@Body() data: MachineDeleteDTO) {
     return this.laundryManageService.machineDelete(data.id);
   }
@@ -101,7 +103,7 @@ export class LaundryManageController {
     description: "시간표 목록",
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
-  @Post("/time/list")
+  @Get("/time")
   timeList() {
     return this.laundryManageService.timeList();
   }
@@ -116,7 +118,7 @@ export class LaundryManageController {
     description: "성공 여부",
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
-  @Post("/time/apply")
+  @Post("/time")
   timeApply(@Body() data: LaundryTimeDTO) {
     return this.laundryManageService.timeApply(data);
   }
@@ -131,7 +133,7 @@ export class LaundryManageController {
     description: "성공 여부",
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
-  @Post("/machine/delete")
+  @Delete("/time")
   timeDelete(@Body() data: LaundryTimeDeleteDTO) {
     return this.laundryManageService.timeDelete(data.id);
   }

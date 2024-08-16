@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
   HttpStatus,
   Post,
   Request,
@@ -21,7 +23,7 @@ export class LaundryController {
 
   @ApiOperation({
     summary: "기기 목록",
-    description: "세탁 기기목록을 불러옵니다.",
+    description: "세탁 기기목록과 현황을 불러옵니다.",
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -29,7 +31,7 @@ export class LaundryController {
     type: [MachineListDTO],
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/list")
+  @Get()
   list(@Request() req) {
     return this.laundryService.list(req.user);
   }
@@ -44,7 +46,7 @@ export class LaundryController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/apply")
+  @Post()
   apply(@Request() req, @Body() data: ApplyDTO) {
     return this.laundryService.apply(req.user._id, data.target, data.time);
   }
@@ -59,7 +61,7 @@ export class LaundryController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/delete")
+  @Delete()
   cancel(@Request() req, @Body() data: ApplyCancelDTO) {
     return this.laundryService.cancel(req.user._id, data.target);
   }

@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
   HttpStatus,
   Post,
   Request,
@@ -29,7 +31,7 @@ export class MusicManageController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
-  @Post("/list")
+  @Get()
   list() {
     return this.musicManageService.musicList();
   }
@@ -44,7 +46,7 @@ export class MusicManageController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
-  @Post("/select")
+  @Post()
   select(@Request() req, @Body() data: SelectDTO) {
     return this.musicManageService.select(req.user._id, data.videoId);
   }
@@ -59,7 +61,7 @@ export class MusicManageController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
-  @Post("/delete")
+  @Delete()
   delete(@Body() data: DeleteDTO) {
     return this.musicManageService.delete(data.videoId);
   }

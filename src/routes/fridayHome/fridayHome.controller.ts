@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
   HttpStatus,
   Post,
   Request,
@@ -33,7 +35,7 @@ export class FridayHomeController {
     type: [FridayHomeListDTO],
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/list")
+  @Get()
   list(@Request() req) {
     return this.fridayHomeService.list(req.user._id);
   }
@@ -48,7 +50,7 @@ export class FridayHomeController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/apply")
+  @Post()
   apply(@Request() req, @Body() data: FridayHomeApplyDTO) {
     return this.fridayHomeService.apply(
       req.user._id,
@@ -68,7 +70,7 @@ export class FridayHomeController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/cancel")
+  @Delete()
   cancel(@Request() req, @Body() data: FridayHomeCancelDTO) {
     return this.fridayHomeService.cancel(req.user._id, data.target);
   }

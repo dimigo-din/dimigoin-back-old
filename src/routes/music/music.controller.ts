@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Post,
   Request,
@@ -34,7 +35,7 @@ export class MusicController {
     type: [YouTubeSearchResultsDTO],
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/list")
+  @Get()
   list(@Request() req) {
     return this.musicService.list(req.user._id);
   }
@@ -72,7 +73,7 @@ export class MusicController {
   @ApiOperation({
     summary: "기상송 투표",
     description:
-      "등록되어있는 기상송을 투표합니다. 만약 등록이 안되어있다면, 등록도 같이 진행합니다.",
+      "등록되어있는 기상송을 투표합니다. 만약 등록이 안되어있다면, 등록도 같이 진행합니다. 만약 이미 같은 투표를 진행했다면 해당 투표를 취소합니다.",
   })
   @ApiResponse({
     status: HttpStatus.CREATED,

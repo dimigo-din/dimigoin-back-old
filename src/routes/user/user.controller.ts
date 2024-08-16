@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   HttpStatus,
   Post,
   Request,
@@ -27,7 +28,7 @@ export class UserController {
     type: MyLaundryDTO,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/laundry")
+  @Get("/laundry")
   laundry(@Request() req) {
     return this.userService.getMyLaundry(req.user._id);
   }
@@ -42,7 +43,7 @@ export class UserController {
     type: MyStayDTO,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/stay")
+  @Get("/stay")
   stay(@Request() req) {
     return this.userService.getMyStay(req.user._id);
   }

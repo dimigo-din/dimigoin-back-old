@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Post,
   Request,
@@ -33,7 +34,7 @@ export class UserManageController {
     status: HttpStatus.CREATED,
   })
   @UseGuards(DIMIJwtAuthGuard)
-  @Post("/login")
+  @Get("/login")
   getLogin(@Request() req) {
     return this.userManageService.getLogin(req.user._id);
   }
