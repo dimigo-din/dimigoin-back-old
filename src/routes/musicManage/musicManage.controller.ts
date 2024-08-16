@@ -20,6 +20,21 @@ export class MusicManageController {
   constructor(private readonly musicManageService: MusicManageService) {}
 
   @ApiOperation({
+    summary: "기상곡 목록",
+    description: "기상곡 목록을 불러옵니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: "기상곡 목록",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @Post("/list")
+  list() {
+    return this.musicManageService.musicList();
+  }
+
+  @ApiOperation({
     summary: "기상곡 확정",
     description: "당일 나올 기상송을 확정짓습니다.",
   })
