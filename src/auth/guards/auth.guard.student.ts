@@ -14,7 +14,6 @@ export class DIMIStudentGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    if (request.user.type === "admin") return true;
 
     try {
       if (request.user.type !== "student")
