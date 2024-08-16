@@ -31,7 +31,7 @@ export class LaundryService {
   ) {}
 
   async list(user) {
-    const weekday = moment().weekday();
+    const weekday = moment().day() - 1;
 
     try {
       const machines = await this.laundryMachineModel.find({
