@@ -92,7 +92,16 @@ export const StayError = {
   YouAlreadyApplied: "Stay: 이미 잔류신청이 되어있습니다.",
   SeatAlreadyApplied: "Stay: 이미 해당 좌석이 예약되었습니다.",
 
-  DisAllowedGrade: "Stay: 해당 학년에는 허용되지 않은 좌석입니다.",
+  DisAllowedGradeSeat: "Stay: 해당 학년에는 허용되지 않은 좌석입니다.",
+  DisAllowedGradeApply: "Stay: 해당 학년의 잔류신청 기간이 아닙니다.",
+
+  BeforeApply: "Stay: 아직 잔류신청 기간이 아닙니다.",
+  AfterApply: "Stay: 잔류신청 기간이 지났습니다.",
+
+  IllegalStayScheduleApplyDayUnit:
+    "Stay: 잔류일정 신청 허용일 단위가 잘못되었습니다.",
+  IllegalStayLocation: "Stay: 허용되지 않은 잔류위치입니다.",
+  IllegalOutgoingTimeFormat: "Stay: 허용되지 않은 외출 시간 범위입니다.",
 };
 
 export const StayManageError = {};
@@ -111,9 +120,8 @@ export const ErrorHandler = (
   finalMsg?: string,
   finalStatus?: HttpStatus,
 ) => {
-  if (Object.values(base).includes(error.message)) {
+  if (Object.values(base).includes(error.message))
     throw new HttpException(error.message, type);
-  }
   if (!!finalMsg && !!finalStatus)
     throw new HttpException(finalMsg, finalStatus);
 };

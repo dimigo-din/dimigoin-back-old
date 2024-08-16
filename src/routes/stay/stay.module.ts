@@ -12,6 +12,8 @@ import {
   StaySeatSchema,
   StayGoingOut,
   StayGoingOutSchema,
+  UserStudent,
+  UserStudentSchema,
 } from "../../schemas";
 
 import { StayController } from "./stay.controller";
@@ -21,6 +23,7 @@ import { StayService } from "./stay.service";
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
+      { name: UserStudent.name, schema: UserStudentSchema },
       { name: StayApply.name, schema: StayApplySchema },
       { name: StaySchedule.name, schema: StayScheduleSchema },
       { name: StaySeat.name, schema: StaySeatSchema },

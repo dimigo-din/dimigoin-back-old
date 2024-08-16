@@ -11,7 +11,12 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { DIMIJwtAuthGuard } from "../../auth/guards/auth.guard";
 import { DIMIStudentGuard } from "../../auth/guards/auth.guard.student";
 
-import { SeatListDTO, StayApplyDTO, StayGoingOutApplyDTO } from "./stay.dto";
+import {
+  GoingOutCancelDTO,
+  SeatListDTO,
+  StayApplyDTO,
+  StayGoingOutApplyDTO,
+} from "./stay.dto";
 import { StayService } from "./stay.service";
 
 @ApiTags("Stay")
@@ -45,7 +50,8 @@ export class StayController {
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
   @Post("/apply")
-  apply(@Request() req, @Body() data: StayApplyDTO) {
+  async apply(@Request() req, @Body() data: StayApplyDTO) {
+    await this.stayService.checkSchedule(req.user._id, data.stayLocation);
     if (data.stayLocation === "studyroom")
       return this.stayService.applySeat(req.user._id, data.stayLocationDetail);
     else if (data.stayLocation === "class")
@@ -64,7 +70,7 @@ export class StayController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/apply")
+  @Post("/cancel")
   cancel(@Request() req) {
     return this.stayService.cancelStay(req.user._id);
   }
@@ -81,9 +87,11 @@ export class StayController {
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
   @Post("/apply/goingOut")
   applyGoingOut(@Request() req, @Body() data: StayGoingOutApplyDTO) {
+    console.log(data);
     return this.stayService.goingOutApply(
       req.user._id,
       data.mealCancel,
+      data.day,
       data.from,
       data.to,
       data.reason,
@@ -100,8 +108,8 @@ export class StayController {
     type: Boolean,
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
-  @Post("/apply/goingOut")
-  cancelGoingOut(@Request() req) {
-    return this.stayService.goingOutDelete(req.user._id);
+  @Post("/cancel/goingOut")
+  cancelGoingOut(@Request() req, @Body() data: GoingOutCancelDTO) {
+    return this.stayService.goingOutDelete(req.user._id, data.goingOutId);
   }
 }

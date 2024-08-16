@@ -23,9 +23,8 @@ export type DormitoryFloor = (typeof DormitoryFloorValues)[number];
 export const DormitoryMachinePosValues = ["L", "M", "R", "D"] as const;
 export type DormitoryMachinePos = (typeof DormitoryMachinePosValues)[number];
 
-export const StayScheduleApplyDayUnitValues = ["weekday", "date"] as const;
-export type StayScheduleApplyDayUnit =
-  (typeof StayScheduleApplyDayUnitValues)[number];
+export const StayScheduleDayUnitValues = ["weekday", "date"] as const;
+export type StayScheduleDayUnit = (typeof StayScheduleDayUnitValues)[number];
 
 export const WeekdayValues = [
   "mon",
@@ -38,8 +37,16 @@ export const WeekdayValues = [
 ] as const;
 export type Weekday = (typeof WeekdayValues)[number];
 
-export const StayTypeValues = ["studyroom", "class", "others"] as const;
-export type StayAtType = (typeof StayTypeValues)[number];
+export const StayAtTypeValues = ["studyroom", "class", "others"] as const;
+export type StayAtType = (typeof StayAtTypeValues)[number];
 
 export const MealScheduleValues = ["breakfast", "launch", "dinner"] as const;
 export type MealSchedule = (typeof MealScheduleValues)[number];
+
+export type StaySchedule = {
+  name: string;
+  from: string;
+  to: string;
+  stayPos: StayAtType;
+  preset: string;
+};

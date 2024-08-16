@@ -32,6 +32,12 @@ export class StayGoingOut {
     required: true,
     type: String,
   })
+  day: string;
+
+  @Prop({
+    required: true,
+    type: String,
+  })
   from: string;
 
   @Prop({
@@ -45,6 +51,12 @@ export class StayGoingOut {
     type: String,
   })
   reason: string;
+
+  @Prop({
+    required: false,
+    type: Boolean,
+  })
+  approved: boolean;
 }
 
 export const StayGoingOutSchema = SchemaFactory.createForClass(StayGoingOut);

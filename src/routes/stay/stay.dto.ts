@@ -1,7 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsString } from "class-validator";
 
-import { Grade, MealSchedule, StayAtType } from "../../common/types";
+import {
+  Grade,
+  MealSchedule,
+  MealScheduleValues,
+  StayAtType,
+  StayAtTypeValues,
+} from "../../common/types";
 
 export class SeatDTO {
   @ApiProperty()
@@ -35,7 +41,7 @@ export class SeatListDTO extends SeatDTO {
 }
 
 export class StayApplyDTO {
-  @ApiProperty()
+  @ApiProperty({ enum: StayAtTypeValues })
   @IsString()
   stayLocation: StayAtType;
 
@@ -48,9 +54,37 @@ export class StayApplyDTO {
 }
 
 export class StayGoingOutApplyDTO {
+  @ApiProperty({ type: [String], enum: MealScheduleValues })
+  @IsArray()
+  mealCancel: MealSchedule[];
+
+  @ApiProperty({ enum: ["sat", "sun"] })
+  @IsString()
+  day: string;
+
+  @ApiProperty({ description: "format: hhmm" })
+  @IsString()
+  from: string;
+
+  @ApiProperty({ description: "format: hhmm" })
+  @IsString()
+  to: string;
+
   @ApiProperty()
   @IsString()
-  mealCancel: MealSchedule[];
+  reason: string;
+}
+
+export class GoingOutCancelDTO {
+  @ApiProperty()
+  @IsString()
+  goingOutId: string;
+}
+
+export class CurrentStaySchedule {
+  @ApiProperty()
+  @IsString()
+  nane: string;
 
   @ApiProperty()
   @IsString()
@@ -61,6 +95,9 @@ export class StayGoingOutApplyDTO {
   to: string;
 
   @ApiProperty()
+  stayPos: StayAtType[];
+
+  @ApiProperty()
   @IsString()
-  reason: string;
+  preset: string;
 }
