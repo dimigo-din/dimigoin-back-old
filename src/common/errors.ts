@@ -105,7 +105,18 @@ export const StayError = {
   IllegalOutgoingTimeFormat: "Stay: 허용되지 않은 외출 시간 범위입니다.",
 };
 
-export const StayManageError = {};
+export const StayManageError = {
+  GoingOutNotFound: "StayManage: 해당 외출신청을 찾을 수 없습니다.",
+  UserNotFound: "StayManage: 해당 유저를 찾을 수 없습니다.",
+  SeatNotFound: "StayManage: 해당 좌석을 찾을 수 없습니다.",
+  ApplyNotFound: "StayManage: 해당 신청을 찾을 수 없습니다.",
+  GoingOutApplyNotFound: "StayManage: 해당 외출 신청을 찾을 수 없습니다.",
+  YouAlreadyApplied: "StayManage: 이미 잔류신청이 되어있습니다.",
+  SeatAlreadyApplied: "StayManage: 이미 해당 좌석이 예약되었습니다.",
+
+  IllegalStayScheduleApplyDayUnit:
+    "StayManage: 잔류일정 신청 허용일 단위가 잘못되었습니다.",
+};
 
 /** 이게 모든 catch에 들어가면 번거롭고 안이뻐서 이럼. 이러니까 이쁘지?!
  *  @param { Object } base - Error bases

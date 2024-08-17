@@ -91,3 +91,32 @@ export class StayStatus {
   @IsString()
   stayLocation: string;
 }
+
+export class OutGoingSelectDTO {
+  @ApiProperty()
+  @IsString()
+  goingOutId: string;
+}
+
+export class TeacherStayApplyDTO {
+  @ApiProperty()
+  @IsString()
+  userId: string;
+
+  @ApiProperty({ enum: StayAtTypeValues })
+  @IsString()
+  stayLocation: StayAtType;
+
+  @ApiProperty({
+    description:
+      "in case stayLocation is seat, write studyroom seat _id. and null for class, place name for others",
+  })
+  @IsString()
+  stayLocationDetail: string;
+}
+
+export class TeacherStayCancelDTO {
+  @ApiProperty()
+  @IsString()
+  userId: string;
+}

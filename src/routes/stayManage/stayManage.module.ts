@@ -12,6 +12,8 @@ import {
   StaySeatSchema,
   UserStudent,
   UserStudentSchema,
+  StayGoingOut,
+  StayGoingOutSchema,
 } from "../../schemas";
 
 import { StayManageController } from "./stayManage.controller";
@@ -25,6 +27,7 @@ import { StayManageService } from "./stayManage.service";
       { name: StayApply.name, schema: StayApplySchema },
       { name: StaySchedule.name, schema: StayScheduleSchema },
       { name: StaySeat.name, schema: StaySeatSchema },
+      { name: StayGoingOut.name, schema: StayGoingOutSchema },
     ]),
   ],
   controllers: [StayManageController],

@@ -5,11 +5,13 @@ import { InjectModel } from "@nestjs/mongoose";
 import * as Excel from "exceljs";
 import * as moment from "moment-timezone";
 
-import { ErrorHandler, StayManageError } from "../../common/errors";
+import { ErrorHandler, StayError, StayManageError } from "../../common/errors";
 import { ClassValues, GenderValues, GradeValues } from "../../common/types";
 import {
   StayApply,
   StayApplyDocument,
+  StayGoingOut,
+  StayGoingOutDocument,
   StaySchedule,
   StayScheduleDocument,
   StaySeat,
@@ -34,6 +36,8 @@ export class StayManageService {
     private readonly stayScheduleModel: Model<StayScheduleDocument>,
     @InjectModel(StaySeat.name)
     private readonly staySeatModel: Model<StaySeatDocument>,
+    @InjectModel(StayGoingOut.name)
+    private readonly stayGoingOutModel: Model<StayGoingOutDocument>,
   ) {}
 
   async listSchedule() {
@@ -61,11 +65,15 @@ export class StayManageService {
       if (!applies) return [];
 
       const userStudents = await this.userStudentModel.find({});
+      const userOutGoings = await this.stayGoingOutModel.find({});
 
       return applies.map((a) => {
         const userStudent = userStudents.find((us) =>
           a[UserPopulator]._id.equals(us.user),
         )!;
+        const userOutGoing = userOutGoings.filter((uo) => {
+          a[UserPopulator]._id.equals(uo.user);
+        });
         return {
           _id: a._id,
           uName: a[UserPopulator].name,
@@ -75,6 +83,7 @@ export class StayManageService {
           stayLocation: !!a.seat
             ? seats.find((s) => s._id.equals(a.seat))!.seat
             : a.other,
+          outGoing: userOutGoing.length !== 0 ? userOutGoing : [],
         };
       });
     } catch (error) {
@@ -117,39 +126,32 @@ export class StayManageService {
       Object.keys(applyGroup).forEach((g) => {
         sheet.mergeCells(`A${i}:A${i + 11}`);
         sheet.getCell(`A${i}`).value = `${g}학년`;
-        sheet.getCell(`A${i}`).alignment = {
-          vertical: "middle",
-          horizontal: "center",
-        };
         Object.keys(applyGroup[g]).forEach((c) => {
           sheet.mergeCells(`B${i}:B${i + 1}`);
           sheet.getCell("B" + i).value = `${c}반`;
-          sheet.getCell("B" + i).alignment = {
-            vertical: "middle",
-            horizontal: "center",
-          };
           sheet.mergeCells(`C${i}:C${i + 1}`);
           sheet.getCell("C" + i).value =
             applyGroup[g][c].M.length + applyGroup[g][c].F.length + "명";
           Object.keys(applyGroup[g][c]).forEach((ge) => {
             sheet.getCell("D" + i).value = ge === "M" ? "남" : "여";
-            sheet.getCell("D" + i).alignment = {
-              vertical: "middle",
-              horizontal: "center",
-            };
             sheet.getCell("E" + i).value = "";
             applyGroup[g][c][ge].forEach((apply) => {
               sheet.getCell("E" + i).value += apply.uName + " ";
-              sheet.getCell("E" + i).alignment = {
-                vertical: "middle",
-                horizontal: "center",
-              };
+              sheet.getCell("E" + i);
             });
             i++;
           });
         });
       });
 
+      sheet.eachRow((row) => {
+        row.eachCell((cell) => {
+          cell.alignment = {
+            vertical: "middle",
+            horizontal: "center",
+          };
+        });
+      });
       sheet.columns.forEach(function (column) {
         let maxLength = 0;
         column["eachCell"]!({ includeEmpty: true }, function (cell) {
@@ -179,6 +181,175 @@ export class StayManageService {
         HttpStatus.INTERNAL_SERVER_ERROR,
         "잔류 현황을 다운로드하는데 실패하였습니다.",
         HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async applySeat(userId: string, seatId: string) {
+    try {
+      const user = await this.userModel.findById(userId);
+      if (!user) throw new Error(StayManageError.UserNotFound);
+
+      const userStudent = await this.userStudentModel.findOne({
+        user: user._id,
+      });
+      if (!userStudent) throw new Error(StayManageError.UserNotFound);
+
+      const myApply = await this.stayApplyModel.findOne({ user: user._id });
+      if (!!myApply) throw new Error(StayManageError.YouAlreadyApplied);
+
+      const apply = await this.stayApplyModel.findOne({ seat: seatId });
+      if (!!apply) throw new Error(StayManageError.SeatAlreadyApplied);
+
+      const seat = await this.staySeatModel.findById(seatId);
+      if (!seat) throw new Error(StayManageError.SeatNotFound);
+
+      await new this.stayApplyModel({
+        user: user._id,
+        seat: seat._id,
+      }).save();
+
+      return true;
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(
+        StayManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "잔류신청에 실패하였습니다.",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async applyClass(userId: string) {
+    try {
+      const user = await this.userModel.findById(userId);
+      if (!user) throw new Error(StayManageError.UserNotFound);
+
+      const myApply = await this.stayApplyModel.findOne({ user: user._id });
+      if (!!myApply) throw new Error(StayManageError.YouAlreadyApplied);
+
+      await new this.stayApplyModel({
+        user: user._id,
+        other: "class",
+      }).save();
+
+      return true;
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(
+        StayManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "잔류신청에 실패하였습니다.",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async applyOther(userId: string, location: string) {
+    try {
+      const user = await this.userModel.findById(userId);
+      if (!user) throw new Error(StayManageError.UserNotFound);
+
+      const myApply = await this.stayApplyModel.findOne({ user: user._id });
+      if (!!myApply) throw new Error(StayManageError.YouAlreadyApplied);
+
+      await new this.stayApplyModel({
+        user: user._id,
+        other: location,
+      }).save();
+
+      return true;
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(
+        StayManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "잔류신청에 실패하였습니다.",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async cancelStay(userId: string) {
+    try {
+      const user = await this.userModel.findById(userId);
+      if (!user) throw new Error(StayManageError.UserNotFound);
+
+      const myApply = await this.stayApplyModel.findOne({ user: user._id });
+      if (!myApply) throw new Error(StayManageError.ApplyNotFound);
+
+      await myApply.deleteOne();
+      await this.stayGoingOutModel.findOneAndDelete({ stay: myApply._id });
+
+      return true;
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(
+        StayManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "잔류신청 취소에 실패하였습니다.",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async approveGoingOut(goingOutId) {
+    try {
+      const goingOut = this.stayGoingOutModel.findById(goingOutId);
+      if (!goingOut) throw new Error(StayManageError.GoingOutNotFound);
+
+      await this.stayGoingOutModel.updateOne(
+        {
+          _id: goingOutId,
+        },
+        {
+          $set: {
+            approved: true,
+          },
+        },
+      );
+
+      return true;
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(
+        StayManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "외출신청을 허가하는데 실패하였습니다.",
+      );
+    }
+  }
+
+  async denyGoingOut(goingOutId) {
+    try {
+      const goingOut = this.stayGoingOutModel.findById(goingOutId);
+      if (!goingOut) throw new Error(StayManageError.GoingOutNotFound);
+
+      await this.stayGoingOutModel.updateOne(
+        {
+          _id: goingOutId,
+        },
+        {
+          $set: {
+            approved: false,
+          },
+        },
+      );
+
+      return true;
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(
+        StayManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "외출신청을 반려하는데 실패하였습니다.",
       );
     }
   }

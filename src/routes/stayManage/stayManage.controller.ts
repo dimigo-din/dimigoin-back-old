@@ -1,10 +1,27 @@
-import { Controller, Get, HttpStatus, Res, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Post,
+  Request,
+  Res,
+  UseGuards,
+} from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard } from "../../auth/guards/auth.guard";
+import { DIMIStudentGuard } from "../../auth/guards/auth.guard.student";
 import { DIMITeacherGuard } from "../../auth/guards/auth.guard.teacher";
 
-import { StayScheduleDTO, StayStatus } from "./stayManage.dto";
+import {
+  OutGoingSelectDTO,
+  StayScheduleDTO,
+  StayStatus,
+  TeacherStayApplyDTO,
+  TeacherStayCancelDTO,
+} from "./stayManage.dto";
 import { StayManageService } from "./stayManage.service";
 
 @ApiTags("Stay Manage")
@@ -51,9 +68,80 @@ export class StayManageController {
     description: "신청자 목록",
     type: [StayStatus],
   })
-  // @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
   @Get("/download")
   downloadStayStatus(@Res() res) {
     return this.stayManageService.downloadStayStatus(res);
+  }
+
+  @ApiOperation({
+    summary: "잔류 신청",
+    description: "잔류를 신청합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: "성공 여부",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @Post()
+  async apply(@Body() data: TeacherStayApplyDTO) {
+    if (data.stayLocation === "studyroom")
+      return this.stayManageService.applySeat(
+        data.userId,
+        data.stayLocationDetail,
+      );
+    else if (data.stayLocation === "class")
+      return this.stayManageService.applyClass(data.userId);
+    else if (data.stayLocation === "others")
+      return this.stayManageService.applyOther(
+        data.userId,
+        data.stayLocationDetail,
+      );
+  }
+
+  @ApiOperation({
+    summary: "잔류 신청 취소",
+    description: "잔류 신청을 취소합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: "성공 여부",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @Delete()
+  cancel(@Body() data: TeacherStayCancelDTO) {
+    return this.stayManageService.cancelStay(data.userId);
+  }
+
+  @ApiOperation({
+    summary: "외출신청 허가",
+    description: "잔류중 외출신청을 허가합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "성공 여부",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @Post("/outGoing/approve")
+  approveGoingOut(@Body() data: OutGoingSelectDTO) {
+    return this.stayManageService.approveGoingOut(data);
+  }
+
+  @ApiOperation({
+    summary: "외출신청 반려",
+    description: "잔류중 외출신청을 반려합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "성공 여부",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @Post("/outGoing/deny")
+  denyGoingOut(@Body() data: OutGoingSelectDTO) {
+    return this.stayManageService.denyGoingOut(data);
   }
 }
