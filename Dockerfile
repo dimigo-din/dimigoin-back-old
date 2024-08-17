@@ -19,3 +19,5 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 
 CMD ["yarn", "start"]
+
+LABEL org.opencontainers.image.source=https://github.com/dimigo-din/dimigoin-back
