@@ -76,7 +76,7 @@ export class UserManageService {
 
       await new this.loginModel({
         type: "dimigo",
-        value: dimigoDTO.sub,
+        value: dimigoDTO.email,
         user: user._id,
       }).save();
       return true;

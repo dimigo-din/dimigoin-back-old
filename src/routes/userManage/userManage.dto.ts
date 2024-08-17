@@ -24,7 +24,7 @@ export class CreateDimigoLoginDTO {
 
   @ApiProperty()
   @IsString()
-  sub: string;
+  email: string;
 }
 
 export class CreateUserDTO {
