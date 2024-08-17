@@ -5,8 +5,8 @@ import { InjectModel } from "@nestjs/mongoose";
 import * as Excel from "exceljs";
 import * as moment from "moment-timezone";
 
-import { ErrorHandler, StayError, StayManageError } from "../../common/errors";
-import { ClassValues, GenderValues, GradeValues } from "../../common/types";
+import { ErrorHandler, StayManageError } from "../../common/errors";
+import { ClassValues, GradeValues } from "../../common/types";
 import {
   StayApply,
   StayApplyDocument,
@@ -72,18 +72,20 @@ export class StayManageService {
           a[UserPopulator]._id.equals(us.user),
         )!;
         const userOutGoing = userOutGoings.filter((uo) => {
-          a[UserPopulator]._id.equals(uo.user);
+          return uo.user.equals(a[UserPopulator]._id);
         });
+
         return {
           _id: a._id,
           uName: a[UserPopulator].name,
           uGender: a[UserPopulator].gender,
           uGrade: userStudent.grade,
           uClass: userStudent.class,
+          uNumber: userStudent.number,
           stayLocation: !!a.seat
             ? seats.find((s) => s._id.equals(a.seat))!.seat
             : a.other,
-          outGoing: userOutGoing.length !== 0 ? userOutGoing : [],
+          outGoing: userOutGoing,
         };
       });
     } catch (error) {
@@ -102,66 +104,101 @@ export class StayManageService {
     try {
       const applyStatus = (await this.getStayStatus()) || [];
 
+      console.log(applyStatus);
+
       const applyGroup = {};
       GradeValues.forEach((g) => {
         applyGroup[g] = {};
         ClassValues.forEach((c) => {
-          applyGroup[g][c] = {};
-          GenderValues.forEach((ge) => {
-            applyGroup[g][c][ge] = [];
-          });
+          applyGroup[g][c] = [];
         });
       });
       applyStatus.forEach((a) => {
-        applyGroup[a.uGrade][a.uClass][a.uGender].push(a);
+        applyGroup[a.uGrade][a.uClass].push(a);
       });
 
       const wb = new Excel.Workbook();
-      const sheet = wb.addWorksheet(
-        `${moment().year()}년도 ${moment().week()}주차 잔류 명단`,
-      );
-      sheet.addRow(["학년", "반", "인원", "성별", "잔류자", "비고"]);
+      function makeSheet(day) {
+        const sheet = wb.addWorksheet(
+          `${moment().year()}년도 ${moment().week()}주차 ${day === "sat" ? "토요일" : "일요일"} 잔류 명단`,
+        );
+        sheet.addRow([
+          "학년",
+          "반",
+          "인원",
+          "잔류자",
+          "조식",
+          "중식",
+          "석식",
+          "외출",
+        ]);
 
-      let i = 2;
-      Object.keys(applyGroup).forEach((g) => {
-        sheet.mergeCells(`A${i}:A${i + 11}`);
-        sheet.getCell(`A${i}`).value = `${g}학년`;
-        Object.keys(applyGroup[g]).forEach((c) => {
-          sheet.mergeCells(`B${i}:B${i + 1}`);
-          sheet.getCell("B" + i).value = `${c}반`;
-          sheet.mergeCells(`C${i}:C${i + 1}`);
-          sheet.getCell("C" + i).value =
-            applyGroup[g][c].M.length + applyGroup[g][c].F.length + "명";
-          Object.keys(applyGroup[g][c]).forEach((ge) => {
-            sheet.getCell("D" + i).value = ge === "M" ? "남" : "여";
-            sheet.getCell("E" + i).value = "";
-            applyGroup[g][c][ge].forEach((apply) => {
-              sheet.getCell("E" + i).value += apply.uName + " ";
-              sheet.getCell("E" + i);
+        let i = 2; // for each line
+        let i2 = 2; // for grade displaying
+        let i3 = 2; // for class displaying
+        Object.keys(applyGroup).forEach((g) => {
+          Object.keys(applyGroup[g]).forEach((c) => {
+            if (applyGroup[g][c].length !== 0) {
+              sheet.mergeCells(`B${i}:B${i + applyGroup[g][c].length - 1}`);
+              sheet.mergeCells(`C${i}:C${i + applyGroup[g][c].length - 1}`);
+            }
+            sheet.getCell("B" + i).value = `${c}반`;
+            sheet.getCell("C" + i).value = applyGroup[g][c].length + "명";
+            applyGroup[g][c].forEach((s) => {
+              sheet.getCell("D" + i).value =
+                `${s.uGrade}${s.uClass}${s.uNumber} ${s.uName}`;
+              const outGoing = s.outGoing.find((og) => og.day === day);
+              if (!outGoing) {
+                sheet.getCell("E" + i).value = "O";
+                sheet.getCell("F" + i).value = "O";
+                sheet.getCell("G" + i).value = "O";
+              } else {
+                sheet.getCell("E" + i).value =
+                  outGoing.mealCancel.indexOf("breakfast") !== -1 ? "X" : "O";
+                sheet.getCell("F" + i).value =
+                  outGoing.mealCancel.indexOf("launch") !== -1 ? "X" : "O";
+                sheet.getCell("G" + i).value =
+                  outGoing.mealCancel.indexOf("dinner") !== -1 ? "X" : "O";
+                sheet.getCell("H" + i).value =
+                  `${outGoing.from.slice(0, 2) + ":" + outGoing.from.slice(2)}~${outGoing.to.slice(0, 2) + ":" + outGoing.to.slice(2)} (${outGoing.reason})`;
+              }
+              i++;
             });
-            i++;
+            if (i === i3) {
+              i++;
+              i3++;
+            }
+            i3 = i;
+          });
+          if (i !== i2) {
+            sheet.mergeCells(`A${i2}:A${i2 + 5}`);
+            sheet.getCell(`A${i2}`).value = `${g}학년`;
+          }
+          i2 = i;
+        });
+
+        sheet.eachRow((row) => {
+          row.eachCell((cell) => {
+            cell.alignment = {
+              vertical: "middle",
+              horizontal: "center",
+            };
           });
         });
-      });
+        sheet.columns.forEach(function (column) {
+          let maxLength = 0;
+          column["eachCell"]!({ includeEmpty: true }, function (cell) {
+            const columnLength = cell.value ? cell.value.toString().length : 10;
+            if (columnLength > maxLength) {
+              maxLength = columnLength;
+            }
+          });
+          column.width = maxLength < 10 ? 10 : maxLength;
+        });
+      }
 
-      sheet.eachRow((row) => {
-        row.eachCell((cell) => {
-          cell.alignment = {
-            vertical: "middle",
-            horizontal: "center",
-          };
-        });
-      });
-      sheet.columns.forEach(function (column) {
-        let maxLength = 0;
-        column["eachCell"]!({ includeEmpty: true }, function (cell) {
-          const columnLength = cell.value ? cell.value.toString().length : 10;
-          if (columnLength > maxLength) {
-            maxLength = columnLength;
-          }
-        });
-        column.width = maxLength < 10 ? 10 : maxLength;
-      });
+      makeSheet("sat");
+      makeSheet("sun");
 
       res.setHeader("Content-Type", "application/vnd.openxmlformats");
       res.setHeader(

@@ -87,6 +87,10 @@ export class StayStatus {
   @IsNumber()
   uClass: number;
 
+  @ApiProperty()
+  @IsNumber()
+  uNumber: number;
+
   @ApiProperty({ description: "잔류위치" })
   @IsString()
   stayLocation: string;

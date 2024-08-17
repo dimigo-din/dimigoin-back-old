@@ -5,14 +5,12 @@ import {
   Get,
   HttpStatus,
   Post,
-  Request,
   Res,
   UseGuards,
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 import { DIMIJwtAuthGuard } from "../../auth/guards/auth.guard";
-import { DIMIStudentGuard } from "../../auth/guards/auth.guard.student";
 import { DIMITeacherGuard } from "../../auth/guards/auth.guard.teacher";
 
 import {
@@ -45,8 +43,8 @@ export class StayManageController {
   }
 
   @ApiOperation({
-    summary: "잔류 신청자 현황 다운로드",
-    description: "잔류 신청자 목록을 저장합니다.",
+    summary: "잔류 신청자 현황",
+    description: "잔류 신청자 목록을 불러옵니다.",
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -60,8 +58,9 @@ export class StayManageController {
   }
 
   @ApiOperation({
-    summary: "잔류 신청자 현황",
-    description: "잔류 신청자 목록을 불러옵니다.",
+    summary: "잔류 신청자 현황 다운로드",
+    description:
+      "잔류 신청자 목록을 저장합니다. 이쪽으로 리다이렉트 시켜버리면 다운로드됩니다.",
   })
   @ApiResponse({
     status: HttpStatus.OK,
