@@ -10,7 +10,7 @@ export class AppService {
 
   private DisplayMode = {
     dev: "Development Mode",
-    prod: "Production Mode",
+    production: "Production Mode",
   };
 
   async onModuleInit() {
@@ -33,7 +33,7 @@ export class AppService {
       "author",
     ]);
 
-    const mode = (process.env.NODE_ENV as Deployment) || "prod";
+    const mode = (process.env.NODE_ENV as Deployment) || "production";
 
     this.cluster = { ...packageInfo, mode };
     return this.cluster;
