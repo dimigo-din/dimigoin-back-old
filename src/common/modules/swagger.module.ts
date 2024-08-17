@@ -15,10 +15,10 @@ export const DIMISwaggerSetup = async (app: INestApplication) => {
         type: "http",
         scheme: "bearer",
         bearerFormat: "JWT",
-        in: "header",
       },
-      "access-token",
+      "bearerAuth",
     )
+    .addSecurityRequirements("bearerAuth")
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
