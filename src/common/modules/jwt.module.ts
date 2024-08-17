@@ -10,12 +10,13 @@ export const JWTOptions: JwtModuleAsyncOptions = {
   imports: [DIMIConfigModule],
   inject: [ConfigService],
   useFactory: async (configService: ConfigService) => ({
-    publicKey: configService.get<string>("JWT_PUBLIC"),
-    privateKey: configService.get<string>("JWT_PRIVATE"),
-    global: true,
     signOptions: {
       algorithm: "RS256",
     },
+    publicKey: configService.get<string>("JWT_PUBLIC"),
+    privateKey: configService.get<string>("JWT_PRIVATE"),
+    secretOrPrivateKey: configService.get<string>("JWT_PRIVATE"),
+    global: true,
   }),
 };
 
