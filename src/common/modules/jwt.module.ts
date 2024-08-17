@@ -9,15 +9,19 @@ import { DIMIConfigModule } from "./config.module";
 export const JWTOptions: JwtModuleAsyncOptions = {
   imports: [DIMIConfigModule],
   inject: [ConfigService],
-  useFactory: async (configService: ConfigService) => ({
-    signOptions: {
-      algorithm: "RS256",
-    },
-    publicKey: configService.get<string>("JWT_PUBLIC"),
-    privateKey: configService.get<string>("JWT_PRIVATE"),
-    secretOrPrivateKey: configService.get<string>("JWT_PRIVATE"),
-    global: true,
-  }),
+  useFactory: async (configService: ConfigService) => {
+    console.log("JWTOptions");
+    console.log(configService.get<string>("JWT_PUBLIC"));
+    console.log(configService.get<string>("JWT_PRIVATE"));
+    return {
+      signOptions: {
+        algorithm: "RS256",
+      },
+      publicKey: configService.get<string>("JWT_PUBLIC"),
+      privateKey: configService.get<string>("JWT_PRIVATE"),
+      global: true,
+    };
+  },
 };
 
 @Module({
