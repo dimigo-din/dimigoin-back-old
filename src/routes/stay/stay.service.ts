@@ -278,7 +278,17 @@ export class StayService {
 
       const goingOut = await this.stayGoingOutModel.find({ user: user._id });
 
-      return goingOut;
+      return goingOut.map((g) => {
+        return {
+          _id: g._id,
+          mealCancel: g.mealCancel,
+          day: g.day,
+          from: g.from,
+          to: g.to,
+          reason: g.reason,
+          approved: g.approved,
+        };
+      });
     } catch (error) {
       console.log(error);
       ErrorHandler(

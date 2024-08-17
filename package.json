@@ -23,6 +23,7 @@
     "@nestjs/schedule": "^4.1.0",
     "add": "^2.0.6",
     "bcrypt": "^5.1.1",
+    "exceljs": "^4.4.0",
     "google-auth-library": "^9.11.0",
     "helmet": "^7.1.0",
     "import-to-array": "^1.0.0",

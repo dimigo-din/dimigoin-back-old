@@ -2,12 +2,7 @@ import type { HydratedDocument } from "mongoose";
 
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-import {
-  Grade,
-  StayScheduleApplyDayUnit,
-  StayScheduleApplyDayUnitValues,
-  StayAtType,
-} from "../common/types";
+import { Grade, StayScheduleDayUnit, StayAtType } from "../common/types";
 
 @Schema({ timestamps: false, versionKey: false })
 export class StaySchedule {
@@ -15,7 +10,19 @@ export class StaySchedule {
     required: true,
     type: String,
   })
-  from: string; // yyyyMMdd for specific year, MMdd for every year;
+  dayUnit: StayScheduleDayUnit;
+
+  @Prop({
+    required: true,
+    type: String,
+  })
+  name: string;
+
+  @Prop({
+    required: true,
+    type: String,
+  })
+  from: string; // yyyyMMDDThhmm for specific year, MMDDThhmm for every year or (weekday like mon, tue.. etc)
 
   @Prop({
     required: true,
@@ -31,15 +38,9 @@ export class StaySchedule {
 
   @Prop({
     required: true,
-    type: StayScheduleApplyDayUnitValues,
-  })
-  applyDayUnit: StayScheduleApplyDayUnit;
-
-  @Prop({
-    required: true,
     type: String,
   })
-  applyFrom: string; // yyyyMMdd or (weekday like monday)
+  applyFrom: string; // yyyyMMDDThhmm or (weekday like mon, tue.. etc)
 
   @Prop({
     required: true,
@@ -52,6 +53,18 @@ export class StaySchedule {
     type: [String],
   })
   stayPos: StayAtType[];
+
+  @Prop({
+    required: true,
+    type: Number,
+  })
+  priority: number;
+
+  @Prop({
+    required: true,
+    type: String,
+  })
+  preset: string;
 }
 
 export const StayScheduleSchema = SchemaFactory.createForClass(StaySchedule);

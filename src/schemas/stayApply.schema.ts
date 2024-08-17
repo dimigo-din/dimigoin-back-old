@@ -14,7 +14,7 @@ export class StayApply {
   user: Types.ObjectId;
 
   @Prop({
-    required: false,
+    required: true,
     type: Types.ObjectId,
     ref: StaySeat.name,
   })

@@ -6,3 +6,4 @@ export * from "./laundry";
 export * from "./laundryManage";
 export * from "./fridayHome";
 export * from "./stay";
+export * from "./stayManage";

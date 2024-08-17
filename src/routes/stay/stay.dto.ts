@@ -101,3 +101,29 @@ export class CurrentStaySchedule {
   @IsString()
   preset: string;
 }
+
+export class GoingOutDTO {
+  @ApiProperty()
+  @IsString()
+  _id: string;
+
+  @ApiProperty()
+  @IsString()
+  day: string;
+
+  @ApiProperty()
+  @IsString()
+  from: string;
+
+  @ApiProperty()
+  @IsString()
+  to: string;
+
+  @ApiProperty()
+  @IsString()
+  reason: string;
+
+  @ApiProperty({ description: "If " })
+  @IsBoolean()
+  approved: boolean | undefined;
+}

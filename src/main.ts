@@ -18,7 +18,7 @@ const bootstrap = async () => {
 
   await DIMISwaggerSetup(app);
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 };
 
 bootstrap();

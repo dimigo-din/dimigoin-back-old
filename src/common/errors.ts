@@ -75,6 +75,7 @@ export const LaundryManageError = {
   InvalidTimeFormat: "LaundryManage: 올바르지 않은 시간 형식입니다.",
   InvalidWeekdayFormat: "LaundryManage: 올바르지 않은 요일 형식입니다.",
 
+  UserNotFound: "LaundryManage: 로그인된 사용자를 찾을 수 없습니다.",
   TimeNotFound: "LaundryManage: 존재하지 않는 시간표입니다.",
 };
 
