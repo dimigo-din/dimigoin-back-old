@@ -119,7 +119,7 @@ export class AuthService {
 
       const loginInfo = await this.loginModel.findOne({
         type,
-        value: payload.sub,
+        value: payload.email,
       });
       if (!loginInfo) throw new Error(AuthError.LoginInfoUnavailable);
 
