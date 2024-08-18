@@ -16,6 +16,10 @@ import { DIMITeacherGuard } from "../../auth/guards/auth.guard.teacher";
 import {
   OutGoingSelectDTO,
   StayScheduleDTO,
+  StaySeatActiveDTO,
+  StaySeatAddDTO,
+  StaySeatDeleteDTO,
+  StaySeatDTO,
   StayStatus,
   TeacherStayApplyDTO,
   TeacherStayCancelDTO,
@@ -142,5 +146,65 @@ export class StayManageController {
   @Post("/outGoing/deny")
   denyGoingOut(@Body() data: OutGoingSelectDTO) {
     return this.stayManageService.denyGoingOut(data);
+  }
+
+  @ApiOperation({
+    summary: "잔류좌석 프리셋 불러오기",
+    description: "잔류좌석 프리셋을 불러옵니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "프리셋",
+    type: [StaySeatDTO],
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @Get("/preset")
+  getPreset() {
+    return this.stayManageService.getPreset();
+  }
+
+  @ApiOperation({
+    summary: "잔류좌석 프리셋 등록",
+    description: "잔류좌석 프리셋 등록합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "성공 여부",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @Post("/preset")
+  addPreset(@Body() data: StaySeatAddDTO) {
+    return this.stayManageService.addPreset(data);
+  }
+
+  @ApiOperation({
+    summary: "잔류좌석 프리셋 삭제",
+    description: "잔류좌석 프리셋 삭제합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "성공 여부",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @Delete("/preset")
+  deletePreset(@Body() data: StaySeatDeleteDTO) {
+    return this.stayManageService.deletePreset(data.preset);
+  }
+
+  @ApiOperation({
+    summary: "잔류좌석 프리셋 활성화",
+    description: "잔류좌석 프리셋 활성화합니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "성공 여부",
+    type: Boolean,
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @Post("/preset/active")
+  activePreset(@Body() data: StaySeatActiveDTO) {
+    return this.stayManageService.activePreset(data.preset);
   }
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsNumber, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsNumber, IsString } from "class-validator";
 
 import {
   Grade,
@@ -123,4 +123,36 @@ export class TeacherStayCancelDTO {
   @ApiProperty()
   @IsString()
   userId: string;
+}
+
+export class StaySeatAddDTO {
+  @ApiProperty()
+  @IsString()
+  seat: string;
+
+  @ApiProperty()
+  @IsArray()
+  grade: Grade[];
+
+  @ApiProperty()
+  @IsString()
+  preset: string;
+}
+
+export class StaySeatDeleteDTO {
+  @ApiProperty()
+  @IsString()
+  preset: string;
+}
+
+export class StaySeatActiveDTO {
+  @ApiProperty()
+  @IsString()
+  preset: string;
+}
+
+export class StaySeatDTO extends StaySeatAddDTO {
+  @ApiProperty()
+  @IsBoolean()
+  active: boolean;
 }

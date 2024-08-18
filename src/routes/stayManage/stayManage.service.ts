@@ -23,6 +23,8 @@ import {
   UserStudentDocument,
 } from "../../schemas";
 
+import { StaySeatAddDTO } from "./stayManage.dto";
+
 @Injectable()
 export class StayManageService {
   constructor(
@@ -387,6 +389,94 @@ export class StayManageService {
         error,
         HttpStatus.INTERNAL_SERVER_ERROR,
         "외출신청을 반려하는데 실패하였습니다.",
+      );
+    }
+  }
+
+  async getPreset() {
+    try {
+      const rawSeats = await this.staySeatModel.find({});
+
+      const seats = {};
+      rawSeats.forEach((rs) => {
+        if (!seats.hasOwnProperty(rs.preset))
+          seats[rs.preset] = { seats: [], active: rs.active };
+        seats[rs.preset].seats.push(rs);
+      });
+
+      return seats;
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(
+        StayManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "좌석 프리셋을 불러오는데 실패하였습니다.",
+      );
+    }
+  }
+
+  async addPreset(data: StaySeatAddDTO) {
+    try {
+      await new this.staySeatModel({
+        ...data,
+        active: false,
+      }).save();
+      return true;
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(
+        StayManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "좌석 프리셋을 등록하는데 실패하였습니다.",
+      );
+    }
+  }
+
+  async deletePreset(preset: string) {
+    try {
+      await this.staySeatModel.deleteMany({ preset: preset });
+      return true;
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(
+        StayManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "좌석 프리셋을 삭제하는데 실패하였습니다.",
+      );
+    }
+  }
+
+  async activePreset(preset: string) {
+    try {
+      await this.staySeatModel.updateMany(
+        {},
+        {
+          $set: {
+            active: false,
+          },
+        },
+      );
+      await this.staySeatModel.updateMany(
+        {
+          preset,
+        },
+        {
+          $set: {
+            active: true,
+          },
+        },
+      );
+      return true;
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(
+        StayManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "좌석 프리셋을 활성화하는데 실패하였습니다.",
       );
     }
   }
