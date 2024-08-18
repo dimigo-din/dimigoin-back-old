@@ -13,7 +13,7 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { DIMIJwtAuthGuard } from "../../auth/guards/auth.guard";
 import { DIMITeacherGuard } from "../../auth/guards/auth.guard.teacher";
 
-import { DeleteDTO, SelectDTO } from "./musicManage.dto";
+import { DeleteDTO, SelectDTO, TeacherMusicListDTO } from "./musicManage.dto";
 import { MusicManageService } from "./musicManage.service";
 
 @ApiTags("Music Manage")
@@ -28,7 +28,7 @@ export class MusicManageController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: "기상곡 목록",
-    type: Boolean,
+    type: [TeacherMusicListDTO],
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
   @Get()

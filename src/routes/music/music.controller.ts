@@ -14,6 +14,7 @@ import { DIMIStudentGuard } from "../../auth/guards/auth.guard.student";
 
 import {
   ApplyDTO,
+  MusicListDTO,
   SearchDTO,
   VoteDTO,
   YouTubeSearchResultsDTO,
@@ -47,7 +48,7 @@ export class MusicController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: "음악 목록",
-    type: [YouTubeSearchResultsDTO],
+    type: [MusicListDTO],
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
   @Post("/search")

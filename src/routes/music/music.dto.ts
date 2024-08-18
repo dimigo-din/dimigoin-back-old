@@ -87,3 +87,33 @@ export class YouTubeSearchResultsDTO {
   @ApiProperty({ type: YouTubeSearchResultThumbnailsList })
   thumbnails: YouTubeSearchResultThumbnailsList;
 }
+
+export class MusicListDTO {
+  @ApiProperty()
+  @IsString()
+  id: string;
+
+  @ApiProperty()
+  @IsString()
+  title: string;
+
+  @ApiProperty()
+  @IsString()
+  thumbnail: string;
+
+  @ApiProperty()
+  @IsNumber()
+  upvote: number;
+
+  @ApiProperty()
+  @IsNumber()
+  downVote: number;
+
+  @ApiProperty()
+  @IsBoolean()
+  doILike: boolean;
+
+  @ApiProperty()
+  @IsBoolean()
+  doIHate: boolean;
+}
