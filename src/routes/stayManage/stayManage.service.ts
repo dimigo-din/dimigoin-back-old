@@ -137,13 +137,13 @@ export class StayManageService {
         let i2 = 2; // for grade displaying
         let i3 = 2; // for class displaying
         Object.keys(applyGroup).forEach((g) => {
+          let studentCount = 0;
           Object.keys(applyGroup[g]).forEach((c) => {
             if (applyGroup[g][c].length !== 0) {
               sheet.mergeCells(`B${i}:B${i + applyGroup[g][c].length - 1}`);
               sheet.mergeCells(`C${i}:C${i + applyGroup[g][c].length - 1}`);
             }
-            sheet.getCell("B" + i).value = `${c}반`;
-            sheet.getCell("C" + i).value = applyGroup[g][c].length + "명";
+            studentCount += applyGroup[g][c].length;
             applyGroup[g][c].forEach((s) => {
               sheet.getCell("D" + i).value =
                 `${s.uGrade}${s.uClass}${s.uNumber} ${s.uName}`;
@@ -164,14 +164,14 @@ export class StayManageService {
               }
               i++;
             });
-            if (i === i3) {
-              i++;
-              i3++;
+            if (i !== i3) {
+              sheet.getCell("B" + i3).value = `${c}반`;
+              sheet.getCell("C" + i3).value = applyGroup[g][c].length + "명";
             }
             i3 = i;
           });
           if (i !== i2) {
-            sheet.mergeCells(`A${i2}:A${i2 + 5}`);
+            sheet.mergeCells(`A${i2}:A${i2 + studentCount - 1}`);
             sheet.getCell(`A${i2}`).value = `${g}학년`;
           }
           i2 = i;
