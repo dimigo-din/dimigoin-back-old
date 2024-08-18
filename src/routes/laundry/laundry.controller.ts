@@ -13,7 +13,7 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { DIMIJwtAuthGuard } from "../../auth/guards/auth.guard";
 import { DIMIStudentGuard } from "../../auth/guards/auth.guard.student";
 
-import { ApplyCancelDTO, ApplyDTO, MachineListDTO } from "./laundry.dto";
+import { ApplyCancelDTO, LaundryApplyDTO, MachineListDTO } from "./laundry.dto";
 import { LaundryService } from "./laundry.service";
 
 @ApiTags("Laundry")
@@ -47,7 +47,7 @@ export class LaundryController {
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
   @Post()
-  apply(@Request() req, @Body() data: ApplyDTO) {
+  apply(@Request() req, @Body() data: LaundryApplyDTO) {
     return this.laundryService.apply(req.user._id, data.target, data.time);
   }
 

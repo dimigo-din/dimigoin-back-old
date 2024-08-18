@@ -7,7 +7,7 @@ export class SearchDTO {
   query: string;
 }
 
-export class ApplyDTO {
+export class MusicApplyDTO {
   @ApiProperty()
   @IsString()
   videoId: string;

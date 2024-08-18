@@ -73,7 +73,7 @@ export class MachineListDTO {
   times: MachineTimes[];
 }
 
-export class ApplyDTO {
+export class LaundryApplyDTO {
   @ApiProperty()
   @IsString()
   target: string;

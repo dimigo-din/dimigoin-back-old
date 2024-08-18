@@ -13,7 +13,7 @@ import { DIMIJwtAuthGuard } from "../../auth/guards/auth.guard";
 import { DIMIStudentGuard } from "../../auth/guards/auth.guard.student";
 
 import {
-  ApplyDTO,
+  MusicApplyDTO,
   MusicListDTO,
   SearchDTO,
   VoteDTO,
@@ -67,7 +67,7 @@ export class MusicController {
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
   @Post("/apply")
-  apply(@Request() req, @Body() data: ApplyDTO) {
+  apply(@Request() req, @Body() data: MusicApplyDTO) {
     return this.musicService.applyMusic(req.user._id, data.videoId);
   }
 
