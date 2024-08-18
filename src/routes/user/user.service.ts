@@ -3,7 +3,7 @@ import type { Model } from "mongoose";
 import { HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 
-import { ErrorHandler, UserError } from "../../common/errors";
+import { ErrorHandler, StayManageError, UserError } from "../../common/errors";
 import {
   LaundryApply,
   LaundryApplyDocument,
@@ -17,11 +17,13 @@ import {
   StayApplyDocument,
   StayGoingOut,
   StayGoingOutDocument,
-  StaySeatPopulator,
+  StaySeat,
+  StaySeatDocument,
   Token,
   TokenDocument,
   User,
   UserDocument,
+  UserPopulator,
   UserStudent,
   UserStudentDocument,
 } from "../../schemas";
@@ -45,6 +47,8 @@ export class UserService {
     private stayApplyModel: Model<StayApplyDocument>,
     @InjectModel(StayGoingOut.name)
     private stayGoingOutModel: Model<StayGoingOutDocument>,
+    @InjectModel(StaySeat.name)
+    private staySeatModel: Model<StaySeatDocument>,
   ) {}
 
   async getLoginMethods(userId) {
@@ -98,8 +102,11 @@ export class UserService {
     try {
       const apply = await this.stayApplyModel
         .findOne({ user: userId })
-        .populate(StaySeatPopulator);
+        .populate(UserPopulator);
       if (!apply) return null;
+
+      const seat = await this.staySeatModel.findById(apply.seat);
+      if (!seat) throw new Error(StayManageError.SeatNotFound);
 
       const goingOut = await this.stayGoingOutModel.findOne({
         stay: apply._id,
@@ -107,7 +114,7 @@ export class UserService {
 
       return {
         _id: apply._id,
-        seat: apply[StaySeatPopulator].seat,
+        seat: seat.seat,
         isGoingOut: !!goingOut,
         ...(!!goingOut
           ? { from: goingOut.from, to: goingOut.to, reason: goingOut.reason }
