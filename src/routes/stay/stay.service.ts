@@ -124,7 +124,7 @@ export class StayService {
         .populate(UserPopulator);
 
       return seats.map((s) => {
-        const thisApply = applies.find((a) => a._id.equals(s._id));
+        const thisApply = applies.find((a) => a.seat.equals(s._id));
 
         return {
           _id: s._id,
