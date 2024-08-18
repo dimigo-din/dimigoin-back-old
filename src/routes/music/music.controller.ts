@@ -12,13 +12,7 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { DIMIJwtAuthGuard } from "../../auth/guards/auth.guard";
 import { DIMIStudentGuard } from "../../auth/guards/auth.guard.student";
 
-import {
-  MusicApplyDTO,
-  MusicListDTO,
-  SearchDTO,
-  VoteDTO,
-  YouTubeSearchResultsDTO,
-} from "./music.dto";
+import { MusicApplyDTO, MusicListDTO, SearchDTO, VoteDTO } from "./music.dto";
 import { MusicService } from "./music.service";
 
 @ApiTags("Music")
@@ -33,7 +27,7 @@ export class MusicController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: "기상송 목록",
-    type: [YouTubeSearchResultsDTO],
+    type: [MusicListDTO],
   })
   @UseGuards(DIMIJwtAuthGuard, DIMIStudentGuard)
   @Get()

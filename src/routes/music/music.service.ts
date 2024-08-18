@@ -136,7 +136,29 @@ export class MusicService {
         time: moment().unix(),
       }).save();
 
-      return results;
+      const applyList = await this.list(user);
+      return results.map((r) => {
+        const apply = applyList.find((a) => a.id === r.id);
+        return !!apply
+          ? {
+              id: r.id,
+              title: r.title,
+              thumbnail: r.thumbnails.high.url,
+              upVote: apply.upVote,
+              downVote: apply.downVote,
+              doILike: apply.doILike,
+              doIHate: apply.doIHate,
+            }
+          : {
+              id: r.id,
+              title: r.title,
+              thumbnail: r.thumbnails.high.url,
+              upVote: 0,
+              downVote: 0,
+              doILike: false,
+              doIHate: false,
+            };
+      });
     } catch (error) {
       console.log(error);
       ErrorHandler(MusicError, error, HttpStatus.INTERNAL_SERVER_ERROR);
