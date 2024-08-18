@@ -5,15 +5,16 @@ import { InjectModel } from "@nestjs/mongoose";
 import * as moment from "moment-timezone";
 
 import { ErrorHandler, LaundryError } from "../../common/errors";
+import { getWeekday } from "../../common/utils/weekday";
 import {
-  LaundryMachine,
-  LaundryMachineDocument,
-  User,
-  UserDocument,
   LaundryApply,
   LaundryApplyDocument,
+  LaundryMachine,
+  LaundryMachineDocument,
   LaundryTimetable,
   LaundryTimetableDocument,
+  User,
+  UserDocument,
   UserPopulator,
 } from "../../schemas";
 
@@ -31,24 +32,17 @@ export class LaundryService {
   ) {}
 
   async list(user) {
-    const weekday = moment().day() - 1;
+    const weekday = getWeekday();
 
     try {
-      const machines = await this.laundryMachineModel.find({
-        gender: user.gender,
-      });
-
-      const machineAvailable = machines.filter(
-        (m) =>
-          (m.allow[weekday] >>> 0).toString(2).charAt(3 - user.grade) === "1",
-      );
-
       const applies = await this.laundryApplyModel
         .find({})
         .populate(UserPopulator);
+
       const times = await this.laundryTimetableModel.find({});
       const timesAvailable = times.filter((t) => t.available[weekday] === 1);
-      return machineAvailable.map((m) => {
+
+      return (await this.getAvailableMachines(user)).map((m) => {
         return {
           ...m.toJSON(),
           times: timesAvailable
@@ -57,6 +51,7 @@ export class LaundryService {
               const thisApply = applies.find(
                 (a) => a.target.equals(m._id) && a.time.equals(t._id),
               );
+
               return !!thisApply
                 ? {
                     ...t.toJSON(),
@@ -145,5 +140,20 @@ export class LaundryService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  // internal functions =====================================================
+
+  async getAvailableMachines(user) {
+    const weekday = getWeekday();
+
+    const machines = await this.laundryMachineModel.find({
+      gender: user.gender,
+    });
+
+    return machines.filter(
+      (m) =>
+        (m.allow[weekday] >>> 0).toString(2).charAt(3 - user.grade) === "1",
+    );
   }
 }

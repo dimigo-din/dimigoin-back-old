@@ -15,6 +15,7 @@ import { DIMITeacherGuard } from "../../auth/guards/auth.guard.teacher";
 
 import {
   OutGoingSelectDTO,
+  SeatListDTO,
   StayScheduleDTO,
   StaySeatActiveDTO,
   StaySeatAddDTO,
@@ -44,6 +45,21 @@ export class StayManageController {
   @Get("/schedule")
   list() {
     return this.stayManageService.listSchedule();
+  }
+
+  @ApiOperation({
+    summary: "잔류 좌석 현황",
+    description: "잔류 좌석 목록을 불러옵니다.",
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: "좌석 목록",
+    type: [SeatListDTO],
+  })
+  @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
+  @Get()
+  staySeatList() {
+    return this.stayManageService.list();
   }
 
   @ApiOperation({

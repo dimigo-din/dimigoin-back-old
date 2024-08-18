@@ -58,6 +58,42 @@ export class StayManageService {
     }
   }
 
+  async list() {
+    try {
+      const seats = await this.staySeatModel.find({});
+      const applies = await this.stayApplyModel
+        .find({})
+        .populate(UserPopulator);
+
+      return seats.map((s) => {
+        const thisApply = applies.find((a) => a._id.equals(s._id));
+
+        return {
+          _id: s._id,
+          seat: s.seat,
+          grade: s.grade,
+          isApplied: !!thisApply,
+          ...(!!thisApply
+            ? {
+                applyId: thisApply._id,
+                applierId: thisApply[UserPopulator]._id,
+                applierName: thisApply[UserPopulator].name,
+              }
+            : {}),
+        };
+      });
+    } catch (error) {
+      console.log(error);
+      ErrorHandler(
+        StayManageError,
+        error,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "열람실 좌석 목록을 가져오는데 실패하였습니다.",
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async getStayStatus() {
     try {
       const seats = await this.staySeatModel.find({});

@@ -115,8 +115,6 @@ export class AuthService {
       const payload = ticket.getPayload();
       if (!payload) throw new Error(AuthError.CannotGetGooglePayload);
 
-      console.log(payload.sub);
-
       const loginInfo = await this.loginModel.findOne({
         type,
         value: payload.email,

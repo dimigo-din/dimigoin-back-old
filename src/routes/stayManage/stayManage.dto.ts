@@ -156,3 +156,34 @@ export class StaySeatDTO extends StaySeatAddDTO {
   @IsBoolean()
   active: boolean;
 }
+
+export class SeatDTO {
+  @ApiProperty()
+  @IsString()
+  _id: string;
+
+  @ApiProperty()
+  @IsString()
+  seat: string;
+
+  @ApiProperty()
+  grade: Grade | null;
+}
+
+export class SeatListDTO extends SeatDTO {
+  @ApiProperty()
+  @IsBoolean()
+  isApplied: boolean;
+
+  @ApiProperty()
+  @IsString()
+  applierId: string;
+
+  @ApiProperty()
+  @IsString()
+  applierName: string;
+
+  @ApiProperty()
+  @IsBoolean()
+  isMine: boolean;
+}
