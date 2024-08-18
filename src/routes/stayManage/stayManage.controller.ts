@@ -57,7 +57,7 @@ export class StayManageController {
     type: [SeatListDTO],
   })
   @UseGuards(DIMIJwtAuthGuard, DIMITeacherGuard)
-  @Get()
+  @Get("/seat")
   staySeatList() {
     return this.stayManageService.list();
   }
