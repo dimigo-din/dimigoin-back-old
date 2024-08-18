@@ -118,7 +118,7 @@ export class StayService {
 
   async list(userId: string) {
     try {
-      const seats = await this.staySeatModel.find({});
+      const seats = await this.staySeatModel.find({ active: true });
       const applies = await this.stayApplyModel
         .find({})
         .populate(UserPopulator);
