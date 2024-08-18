@@ -157,7 +157,8 @@ export class AuthService {
         await this.jwtService.verifyAsync(token);
       if (!payload.refresh) throw new Error(AuthError.NoRefreshToken);
 
-      const user = await this.userModel.findOne({ _id: payload.user });
+      console.log(payload);
+      const user = await this.userModel.findById(payload._id);
       if (!user) throw new Error(AuthError.UserNotFound);
 
       if (user.type === "student") {
