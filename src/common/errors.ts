@@ -94,6 +94,7 @@ export const StayError = {
   SeatAlreadyApplied: "Stay: 이미 해당 좌석이 예약되었습니다.",
 
   DisAllowedGradeSeat: "Stay: 해당 학년에는 허용되지 않은 좌석입니다.",
+  DisAllowedGenderSeat: "Stay: 해당 성별에는 허용되지 않은 좌석입니다.",
   DisAllowedGradeApply: "Stay: 해당 학년의 잔류신청 기간이 아닙니다.",
 
   BeforeApply: "Stay: 아직 잔류신청 기간이 아닙니다.",

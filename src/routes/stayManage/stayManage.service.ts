@@ -72,6 +72,7 @@ export class StayManageService {
           _id: s._id,
           seat: s.seat,
           grade: s.grade,
+          gender: s.gender,
           isApplied: !!thisApply,
           ...(!!thisApply
             ? {

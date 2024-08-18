@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsArray, IsBoolean, IsNumber, IsString } from "class-validator";
 
 import {
+  Gender,
   Grade,
   StayAtType,
   StayAtTypeValues,
@@ -133,6 +134,10 @@ export class StaySeatAddDTO {
   @ApiProperty()
   @IsArray()
   grade: Grade[];
+
+  @ApiProperty()
+  @IsArray()
+  gender: Gender[];
 
   @ApiProperty()
   @IsString()

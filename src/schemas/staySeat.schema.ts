@@ -3,7 +3,7 @@ import type { HydratedDocument } from "mongoose";
 
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
-import { Grade } from "../common/types";
+import { Gender, Grade } from "../common/types";
 
 @Schema({ timestamps: false, versionKey: false })
 export class StaySeat {
@@ -18,6 +18,12 @@ export class StaySeat {
     type: [Number],
   })
   grade: Grade[];
+
+  @Prop({
+    required: true,
+    type: [String],
+  })
+  gender: Gender[];
 
   @Prop({
     required: true,

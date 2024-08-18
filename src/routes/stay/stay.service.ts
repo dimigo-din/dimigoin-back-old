@@ -130,6 +130,7 @@ export class StayService {
           _id: s._id,
           seat: s.seat,
           grade: s.grade,
+          gender: s.gender,
           isApplied: !!thisApply,
           ...(!!thisApply
             ? {
@@ -176,6 +177,9 @@ export class StayService {
 
       if (seat.toJSON().grade.indexOf(userStudent.grade) === -1)
         throw new Error(StayError.DisAllowedGradeSeat);
+
+      if (seat.toJSON().gender.indexOf(user.gender) === -1)
+        throw new Error(StayError.DisAllowedGenderSeat);
 
       await new this.stayApplyModel({
         user: user._id,
