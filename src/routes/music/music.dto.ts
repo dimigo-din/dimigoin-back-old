@@ -103,7 +103,7 @@ export class MusicListDTO {
 
   @ApiProperty()
   @IsNumber()
-  upvote: number;
+  upVote: number;
 
   @ApiProperty()
   @IsNumber()
